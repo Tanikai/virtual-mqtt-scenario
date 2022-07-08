@@ -1,0 +1,53 @@
+site_name: virtual-mqtt
+site_url: https://tanikai.github.io/virtual-mqtt/
+site_author: Kai Anter
+site_description: >-
+  A virtual MQTT simulator in a smart home scenario
+
+# Repository
+repo_name: tanikai/virtual-mqtt
+repo_url: https://github.com/tanikai/virtual-mqtt
+
+theme:
+  name: material
+  language: en
+  features:
+    - content.code.annotate
+    # - content.tabs.link
+    - content.tooltips
+    # - header.autohide
+    # - navigation.expand
+    - navigation.indexes
+    # - navigation.instant
+    # - navigation.prune
+    - navigation.sections
+    - navigation.tabs
+    # - navigation.tabs.sticky
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - search.share
+    - search.suggest
+    - toc.follow
+    # - toc.integrate
+  palette:
+    - scheme: default
+      primary: deep purple
+      accent: deep purple
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: deep purple
+      accent: deep purple
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: Roboto
+    code: Roboto Mono
+
+plugins:
+  - search
+  - minify:
+      minify_html: true
