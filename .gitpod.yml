@@ -5,6 +5,8 @@
 image:
     file: .gitpod.dockerfile
 ports:
+  - port: 5900
+    onOpen: ignore
   - port: 6080 # vnc port
     onOpen: open-preview
 tasks:
