@@ -1,4 +1,16 @@
 import paho.mqtt.client as mqtt
+from tkinter import Frame, Label
+
+
+class DeviceBaseView(Frame):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.label = Label(parent, text="Hello World!")
+        self.label.pack()
+
+    def set_state(self, state: dict):
+        self.label.config(text=state["device_topic"])
+
 
 class DeviceBase:
     mqtt_client = mqtt.Client()
@@ -7,8 +19,9 @@ class DeviceBase:
     room_id: str
     device_id: str
 
-    #@property
-    state: dict # general object for storing state
+    state: dict  # general object for storing state
+
+    view = None
 
     def __init__(self):
         self.home_id = "0"
@@ -16,12 +29,17 @@ class DeviceBase:
         self.device_id = "deviceBase"
         self.mqtt_client.on_connect = self.on_connect
         self.mqtt_client.on_message = self.on_message
-        self.mqtt_client.connect("localhost", 1883, 60)
 
     def __del__(self):
         self.mqtt_client.loop_stop()
 
     def run(self):
+        try:
+            self.mqtt_client.connect("localhost", 1883, 60)
+        except ConnectionError as e:
+            print("Connection Error to broker:", e)
+            return
+
         self.mqtt_client.loop_start()
 
     def get_base_path(self):
@@ -37,3 +55,14 @@ class DeviceBase:
     # The callback for when a PUBLISH message is received from the server.
     def on_message(self, client, userdata, msg):
         print(msg.topic + " " + str(msg.payload))
+
+    def set_view(self, view: DeviceBaseView):
+        self.view = view
+
+    def new_state(self, state: dict):
+        if self.view is None:
+            return
+        state["device_topic"] = self.get_base_path()
+        self.view.set_state(state)
+
+

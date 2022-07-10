@@ -1,6 +1,7 @@
+from tkinter import Label
 from threading import Thread, Event
 from random import randint
-from .device_base import DeviceBase
+from .device_base import DeviceBase, DeviceBaseView
 
 
 class ThermostatGenerator(Thread):
@@ -34,6 +35,7 @@ class DeviceThermostat(DeviceBase):
             self.get_base_path() + "temperature",
             data["temperature"]
         )
+        self.new_state(data)
 
     def __init__(self):
         super().__init__()
@@ -47,6 +49,10 @@ class DeviceThermostat(DeviceBase):
         super().run()
         self.generator.start()
 
+    # override
+    def set_view(self, view: DeviceBaseView):
+        super().set_view(view)
+
     def stop(self):
         self.generator.event.set()
 
@@ -54,3 +60,12 @@ class DeviceThermostat(DeviceBase):
         print("Thermostat connected")
 
 
+class DeviceThermostatView(DeviceBaseView):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.label2 = Label(parent, text="World 2")
+        self.label2.pack()
+
+    def set_state(self, state: dict):
+        super().set_state(state)
+        self.label2.config(text=state["temperature"])
