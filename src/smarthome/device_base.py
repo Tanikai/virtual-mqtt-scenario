@@ -1,23 +1,37 @@
 import paho.mqtt.client as mqtt
-from tkinter import Frame, Label
+import tkinter as tk
+from datetime import datetime
 
 
-class DeviceBaseView(Frame):
+class DeviceBaseView(tk.Frame):
+    roff = 2
+
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.label = Label(parent, text="Hello World!")
-        self.label.pack()
+        # General Config
+        self.config(borderwidth=2, relief="groove")
+        # Topic Info
+        self.l_topic = tk.Label(self, text="Topic:")
+        self.l_topic.grid(row=0, column=0, sticky=tk.W)
+        self.l_valtopic = tk.Label(self, text="DEVICE_TOPIC")
+        self.l_valtopic.grid(row=0, column=1, sticky=tk.W)
+        # Last Refresh Info
+        self.l_lastrefresh = tk.Label(self, text="Last Refresh:")
+        self.l_lastrefresh.grid(row=1, column=0, sticky=tk.W)
+        self.l_vallastrefresh = tk.Label(self, text="LAST_REFRESH")
+        self.l_vallastrefresh.grid(row=1, column=1, sticky=tk.W)
 
     def set_state(self, state: dict):
-        self.label.config(text=state["device_topic"])
+        self.l_valtopic.config(text=state["device_topic"])
+        self.l_vallastrefresh.config(text=datetime.now().strftime("%H:%M:%S"))
 
 
 class DeviceBase:
     mqtt_client = mqtt.Client()
 
-    home_id: str
-    room_id: str
-    device_id: str
+    home_id = "DEFAULT_HOME_ID"
+    room_id = "DEFAULT_ROOM_ID"
+    device_id = "DEFAULT_DEVICE_ID"
 
     state: dict  # general object for storing state
 
@@ -64,5 +78,3 @@ class DeviceBase:
             return
         state["device_topic"] = self.get_base_path()
         self.view.set_state(state)
-
-

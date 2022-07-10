@@ -1,4 +1,4 @@
-from tkinter import Label
+import tkinter as tk
 from threading import Thread, Event
 from random import randint
 from .device_base import DeviceBase, DeviceBaseView
@@ -63,9 +63,11 @@ class DeviceThermostat(DeviceBase):
 class DeviceThermostatView(DeviceBaseView):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.label2 = Label(parent, text="World 2")
-        self.label2.pack()
+        self.l_temp = tk.Label(self, text="Temperature:")
+        self.l_temp.grid(row=self.roff, column=0, sticky=tk.W)
+        self.l_valtemp = tk.Label(self, text="VAL_TEMPERATURE")
+        self.l_valtemp.grid(row=self.roff, column=1, sticky=tk.W)
 
     def set_state(self, state: dict):
         super().set_state(state)
-        self.label2.config(text=state["temperature"])
+        self.l_valtemp.config(text=state["temperature"])
