@@ -1,7 +1,7 @@
 import tkinter as tk
 from smarthome.device_base import DeviceBase, DeviceBaseView
 from typing import Type
-from explorer import Explorer
+from explorer import Explorer, ExplorerView
 
 
 class App:
@@ -18,8 +18,17 @@ class App:
         self.bt_start.pack(side=tk.TOP, anchor=tk.W, padx=5, pady=5)
         self.fr_devices = tk.Frame(self.root, background="white")
         self.fr_devices.pack(side=tk.LEFT, fill=tk.BOTH)
-        self.fr_explorer = Explorer(self.root)
+
+        self.fr_explorer = ExplorerView(self.root)
         self.fr_explorer.pack(side=tk.RIGHT, anchor=tk.NE, padx=5, pady=5, fill=tk.BOTH, expand=True)
+        self.explorer = Explorer()
+        self.explorer.set_view(self.fr_explorer)
+
+        # testing
+        self.explorer.insert_message("/home0/room0/device0", "test123")
+        self.explorer.insert_message("/home0/room0/device0", "same message again")
+        self.explorer.insert_message("/home0/room1/device0", "different room")
+        self.explorer.insert_message("/home1/room0/device0", "this is home 1")
 
     def run(self):
         try:
@@ -31,6 +40,7 @@ class App:
 
     def start_scenario(self):
         self.bt_start.config(state=tk.DISABLED)
+        self.explorer.run()
         for d in self.devices:
             d.run()
 

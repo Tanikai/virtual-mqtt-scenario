@@ -41,10 +41,6 @@ class DeviceThermostat(DeviceBase):
         super().__init__()
         self.generator = ThermostatGenerator(self.on_new_data)
 
-    def __del__(self):
-        self.generator.event.set()
-        super().__del__()
-
     def run(self):
         super().run()
         self.generator.start()
