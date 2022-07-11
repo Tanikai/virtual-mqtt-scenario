@@ -44,7 +44,6 @@ class DeviceBase:
         self.mqtt_client.on_connect = self.on_connect
         self.mqtt_client.on_message = self.on_message
 
-
     def run(self):
         try:
             self.mqtt_client.connect("localhost", 1883, 60)
@@ -62,7 +61,7 @@ class DeviceBase:
 
         # Subscribing in on_connect() means that if we lose the connection and
         # reconnect then subscriptions will be renewed.
-        #client.subscribe("#")
+        # client.subscribe("#")
 
     # The callback for when a PUBLISH message is received from the server.
     def on_message(self, client, userdata, msg):

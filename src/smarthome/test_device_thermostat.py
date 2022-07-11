@@ -10,4 +10,3 @@ class TestDeviceThermostat(TestCase):
         th.start()
         sleep(10)
         th.event.set()
-

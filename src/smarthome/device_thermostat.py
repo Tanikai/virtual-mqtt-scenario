@@ -15,7 +15,8 @@ class ThermostatGenerator(Thread):
 
     def run(self):
         while not self.event.is_set():
-            self.last_reading = self.generate_room_temperature(self.last_reading)
+            self.last_reading = self.generate_room_temperature(
+                self.last_reading)
             # print(self.last_reading)
             self.callback({"temperature": self.last_reading})
             self.event.wait(1)  # wait 1 sec
