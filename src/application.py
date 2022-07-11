@@ -1,6 +1,7 @@
 import tkinter as tk
 from smarthome.device_base import DeviceBase, DeviceBaseView
 from typing import Type
+from explorer import Explorer
 
 
 class App:
@@ -15,8 +16,10 @@ class App:
                                   text="Start Scenario",
                                   command=self.start_scenario)
         self.bt_start.pack(side=tk.TOP, anchor=tk.W, padx=5, pady=5)
-        self.fr_devices = tk.Frame(self.root)
-        self.fr_devices.pack(fill=tk.BOTH, expand=True)
+        self.fr_devices = tk.Frame(self.root, background="white")
+        self.fr_devices.pack(side=tk.LEFT, fill=tk.BOTH)
+        self.fr_explorer = Explorer(self.root)
+        self.fr_explorer.pack(side=tk.RIGHT, anchor=tk.NE, padx=5, pady=5, fill=tk.BOTH, expand=True)
 
     def run(self):
         try:
