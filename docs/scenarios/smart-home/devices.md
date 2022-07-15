@@ -1,4 +1,4 @@
-# Devices
+# List of Smart Home Devices
 
 ## General
 

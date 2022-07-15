@@ -1,17 +1,12 @@
-# Home
+# Virtual MQTT Scenario
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+This project simulates a virtual scenario with MQTT devices.
 
-## Commands
+## Getting Started
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+If you haven't installed or worked with Python 3 yet, go to
 
-## Project layout
+To get started after , [follow the instructions here](general/getting-started.md)
 
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+
+

@@ -51,3 +51,28 @@ plugins:
   - search
   - minify:
       minify_html: true
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+
+# Page tree for navigation
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Python / IDE setup: general/setup.md
+      - Getting Started: general/getting-started.md
+  - Smart Home Scenario:
+      - Introduction: scenarios/smart-home/introduction.md
+      - List of Devices: scenarios/smart-home/devices.md
+      - Adding devices to simulation: scenarios/smart-home/add-device-to-simulation.md
+      - Customizing device functionality: scenarios/smart-home/extend-device.md
+      - Creating your own device: scenarios/smart-home/create-own-device.md
+  - MQTT Reference:
+      - Control Packets: reference/mqtt-reference.md
