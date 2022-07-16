@@ -29,32 +29,20 @@ class ThermostatGenerator(Thread):
 
 
 class DeviceThermostat(DeviceBase):
-    generator = None
+    def _on_new_data(self, data: dict):
+        if self.on_new_data is not None:
+            self.on_new_data(data)
+            return
 
-    def on_new_data(self, data: dict):
         self.mqtt_client.publish(
             self.get_base_path() + "temperature",
             data["temperature"]
         )
-        self.new_state(data)
+        self._new_state(data)
 
     def __init__(self):
         super().__init__()
-        self.generator = ThermostatGenerator(self.on_new_data)
-
-    def run(self):
-        super().run()
-        self.generator.start()
-
-    # override
-    def set_view(self, view: DeviceBaseView):
-        super().set_view(view)
-
-    def stop(self):
-        self.generator.event.set()
-
-    def on_connect(self, client, userdata, flags, rc):
-        print("Thermostat connected")
+        self.generator = ThermostatGenerator(self._on_new_data)
 
 
 class DeviceThermostatView(DeviceBaseView):
