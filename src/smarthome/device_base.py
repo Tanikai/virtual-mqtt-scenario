@@ -6,17 +6,36 @@ from threading import Thread, Event
 
 
 class GeneratorBase(Thread):
+    """
+    This class is the base class for all generator objects. Generator objects
+    are used by sensor devices to generate data for the simulated scenario.
+    It inherits from threading.Thread so that it doesn't block the single
+    threaded Global Interpreter Lock of Python while waiting to generate
+    the next value.
+    """
 
     def __init__(self, callback: typing.Callable):
+        """
+        Constructor for the generator thread.
+        :param callback: Callback function that is called when new data is
+        generated.
+        """
         super().__init__(daemon=True)
         self.callback = callback
         self.event = Event()  # for stopping generator
 
     def stop(self):
+        """
+        Stops the generator thread.
+        :return:
+        """
         self.event.set()
 
 
 class DeviceBaseView(tk.Frame):
+    """
+    This is the base class for the Device View.
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -43,8 +62,6 @@ class DeviceBase:
     """
     This is the base class for all devices in the scenario.
 
-        on_new_data (typing.Callable): Edit data from generator before passing
-        it to the device.
     """
 
     def __init__(self):
@@ -56,13 +73,13 @@ class DeviceBase:
 
         # Custom functions
         self.on_new_data = None
-        """edit data from generator before passing it to the device."""
+        """Edit data from generator before passing it to the device."""
 
         self.on_new_state = None
         self.on_run = None  # subscribe to custom topics here
         self.on_connect = None
         self.on_message = None  # react to custom messages here
-        """Constructor for DeviceBase."""
+        
         self.home_id = "0"
         self.room_id = "test"
         self.device_id = "deviceBase"
