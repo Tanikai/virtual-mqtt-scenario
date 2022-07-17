@@ -4,12 +4,27 @@ from random import randint
 from .device_base import DeviceBase, DeviceBaseView
 
 
+class DeviceThermostatView(DeviceBaseView):
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.l_temp = tk.Label(self, text="Temperature:")
+        self.l_temp.grid(row=self.row_offset, column=0, sticky=tk.W)
+        self.l_valtemp = tk.Label(self, text="VAL_TEMPERATURE")
+        self.l_valtemp.grid(row=self.row_offset, column=1, sticky=tk.W)
+
+    def set_state(self, state: dict):
+        super().set_state(state)
+        self.l_valtemp.config(text=state["temperature"])
+
+
 class ThermostatGenerator(Thread):
+
     callback = None
     last_reading = 20
 
     def __init__(self, callback):
-        super().__init__()
+        super().__init__(daemon=True)
         self.callback = callback  # callback method when generating new value
         self.event = Event()  # for stopping generator
 
@@ -21,6 +36,9 @@ class ThermostatGenerator(Thread):
             self.callback({"temperature": self.last_reading})
             self.event.wait(1)  # wait 1 sec
 
+    def stop(self):
+        self.event.set()
+
     @staticmethod
     def generate_room_temperature(last=20.0) -> float:
         last = int(last) * 10
@@ -29,6 +47,11 @@ class ThermostatGenerator(Thread):
 
 
 class DeviceThermostat(DeviceBase):
+
+    def __init__(self):
+        super().__init__()
+        self.generator = ThermostatGenerator(self._on_new_data)
+
     def _on_new_data(self, data: dict):
         if self.on_new_data is not None:
             self.on_new_data(data)
@@ -39,20 +62,3 @@ class DeviceThermostat(DeviceBase):
             data["temperature"]
         )
         self._new_state(data)
-
-    def __init__(self):
-        super().__init__()
-        self.generator = ThermostatGenerator(self._on_new_data)
-
-
-class DeviceThermostatView(DeviceBaseView):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.l_temp = tk.Label(self, text="Temperature:")
-        self.l_temp.grid(row=self.roff, column=0, sticky=tk.W)
-        self.l_valtemp = tk.Label(self, text="VAL_TEMPERATURE")
-        self.l_valtemp.grid(row=self.roff, column=1, sticky=tk.W)
-
-    def set_state(self, state: dict):
-        super().set_state(state)
-        self.l_valtemp.config(text=state["temperature"])

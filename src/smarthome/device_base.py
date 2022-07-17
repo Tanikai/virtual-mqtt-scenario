@@ -4,7 +4,7 @@ from datetime import datetime
 
 
 class DeviceBaseView(tk.Frame):
-    roff = 2
+    row_offset = 2
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -57,7 +57,8 @@ class DeviceBase:
             if self.on_run is not None:
                 self.on_run()
             if self.generator is not None:
-                self.generator.start() # run is blocking, start is non-blocking
+                # run is blocking, start is non-blocking
+                self.generator.start()
 
         except ConnectionError as e:
             print("Connection Error to broker:", e)
@@ -96,6 +97,16 @@ class DeviceBase:
         self.state = state
         self.state["device_topic"] = self.get_base_path()
 
+        if self.on_new_state is not None:
+            self.on_new_state()
+
         if self.view is None:
             return
         self.view.set_state(self.state)
+
+    def _on_new_data(self, data: dict) -> bool:
+        if self.on_new_data is not None:
+            self.on_new_data(data)
+            return True
+        else:
+            return False
