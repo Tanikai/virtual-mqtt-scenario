@@ -79,6 +79,7 @@ class DeviceBase:
         self.on_run = None  # subscribe to custom topics here
         self.on_connect = None
         self.on_message = None  # react to custom messages here
+        self._on_subscribe_controls = None
         
         self.home_id = "0"
         self.room_id = "test"
@@ -92,6 +93,7 @@ class DeviceBase:
     def run(self):
         try:
             self.mqtt_client.connect("localhost", 1883, 60)
+            self.subscribe_controls()
             if self.on_run is not None:
                 self.on_run()
             if self.generator is not None:
@@ -121,12 +123,14 @@ class DeviceBase:
         # reconnect then subscriptions will be renewed.
         # client.subscribe("#")
 
+    def subscribe_controls(self):
+        pass
+
     # The callback for when a PUBLISH message is received from the server.
     def _client_message(self, client, userdata, msg):
         if self.on_message is not None:
             self.on_message(client, userdata, msg)
             return
-        print(msg.topic + " " + str(msg.payload))
 
     def _on_new_data(self, data: dict) -> bool:
         if self.on_new_data is not None:
