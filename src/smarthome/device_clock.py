@@ -1,6 +1,5 @@
 import tkinter as tk
-from .device_base import DeviceBase, DeviceBaseView
-from threading import Thread, Event
+from .device_base import DeviceBase, DeviceBaseView, GeneratorBase
 from datetime import datetime, time, timedelta, date
 
 
@@ -18,15 +17,11 @@ class DeviceClockView(DeviceBaseView):
         self.l_valtime.config(text=state["time"])
 
 
-class ClockGenerator(Thread):
-
-    callback = None
-    current_time = datetime.combine(date.today(), time(hour=12))
+class ClockGenerator(GeneratorBase):
 
     def __init__(self, callback):
-        super().__init__(daemon=True)
-        self.callback = callback
-        self.event = Event()  # for stopping
+        super().__init__(callback)
+        self.current_time = datetime.combine(date.today(), time(hour=12))
 
     def run(self):
         while not self.event.is_set():
@@ -34,9 +29,6 @@ class ClockGenerator(Thread):
             # increase 15 minutes every 1 second
             self.current_time = self.current_time + timedelta(minutes=15)
             self.event.wait(1)  # wait 1 second
-
-    def stop(self):
-        self.event.set()
 
 
 class DeviceClock(DeviceBase):
@@ -55,4 +47,3 @@ class DeviceClock(DeviceBase):
             data["time"]
         )
         self._new_state(data)
-

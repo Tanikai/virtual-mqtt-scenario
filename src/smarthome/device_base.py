@@ -1,13 +1,26 @@
 import paho.mqtt.client as mqtt
 import tkinter as tk
+import typing
 from datetime import datetime
+from threading import Thread, Event
+
+
+class GeneratorBase(Thread):
+
+    def __init__(self, callback: typing.Callable):
+        super().__init__(daemon=True)
+        self.callback = callback
+        self.event = Event()  # for stopping generator
+
+    def stop(self):
+        self.event.set()
 
 
 class DeviceBaseView(tk.Frame):
-    row_offset = 2
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.row_offset = 2
         # General Config
         self.config(borderwidth=2, relief="groove")
         # Topic Info
@@ -27,29 +40,37 @@ class DeviceBaseView(tk.Frame):
 
 
 class DeviceBase:
-    mqtt_client = mqtt.Client()
+    """
+    This is the base class for all devices in the scenario.
 
-    home_id = "DEFAULT_HOME_ID"
-    room_id = "DEFAULT_ROOM_ID"
-    device_id = "DEFAULT_DEVICE_ID"
-
-    generator = None
-    state: dict  # general object for storing state
-    view = None
-
-    # Custom functions
-    on_new_data = None  # edit generated data before passing to device
-    on_new_state = None  #
-    on_run = None  # subscribe to custom topics here
-    on_connect = None
-    on_message = None  # react to custom messages here
+        on_new_data (typing.Callable): Edit data from generator before passing
+        it to the device.
+    """
 
     def __init__(self):
+        self.mqtt_client = mqtt.Client()
+
+        self.generator = None
+        self.state = {}
+        self.view: DeviceBaseView
+
+        # Custom functions
+        self.on_new_data = None
+        """edit data from generator before passing it to the device."""
+
+        self.on_new_state = None
+        self.on_run = None  # subscribe to custom topics here
+        self.on_connect = None
+        self.on_message = None  # react to custom messages here
+        """Constructor for DeviceBase."""
         self.home_id = "0"
         self.room_id = "test"
         self.device_id = "deviceBase"
         self.mqtt_client.on_connect = self._client_connect
         self.mqtt_client.on_message = self._client_message
+
+    def set_view(self, view: DeviceBaseView):
+        self.view = view
 
     def run(self):
         try:
@@ -70,7 +91,7 @@ class DeviceBase:
         if self.generator is not None:
             self.generator.event.set()
 
-    def get_base_path(self):
+    def get_base_path(self) -> str:
         return f"/{self.home_id}/{self.room_id}/{self.device_id}/"
 
     def _client_connect(self, client, userdata, flags, rc):
@@ -90,8 +111,12 @@ class DeviceBase:
             return
         print(msg.topic + " " + str(msg.payload))
 
-    def set_view(self, view: DeviceBaseView):
-        self.view = view
+    def _on_new_data(self, data: dict) -> bool:
+        if self.on_new_data is not None:
+            self.on_new_data(data)
+            return True
+        else:
+            return False
 
     def _new_state(self, state: dict):
         self.state = state
@@ -103,10 +128,3 @@ class DeviceBase:
         if self.view is None:
             return
         self.view.set_state(self.state)
-
-    def _on_new_data(self, data: dict) -> bool:
-        if self.on_new_data is not None:
-            self.on_new_data(data)
-            return True
-        else:
-            return False

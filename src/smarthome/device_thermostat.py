@@ -1,7 +1,6 @@
 import tkinter as tk
-from threading import Thread, Event
 from random import randint
-from .device_base import DeviceBase, DeviceBaseView
+from .device_base import DeviceBase, DeviceBaseView, GeneratorBase
 
 
 class DeviceThermostatView(DeviceBaseView):
@@ -18,15 +17,11 @@ class DeviceThermostatView(DeviceBaseView):
         self.l_valtemp.config(text=state["temperature"])
 
 
-class ThermostatGenerator(Thread):
-
-    callback = None
-    last_reading = 20
+class ThermostatGenerator(GeneratorBase):
 
     def __init__(self, callback):
-        super().__init__(daemon=True)
-        self.callback = callback  # callback method when generating new value
-        self.event = Event()  # for stopping generator
+        super().__init__(callback)
+        self.last_reading = 20
 
     def run(self):
         while not self.event.is_set():
@@ -35,9 +30,6 @@ class ThermostatGenerator(Thread):
             # print(self.last_reading)
             self.callback({"temperature": self.last_reading})
             self.event.wait(1)  # wait 1 sec
-
-    def stop(self):
-        self.event.set()
 
     @staticmethod
     def generate_room_temperature(last=20.0) -> float:
