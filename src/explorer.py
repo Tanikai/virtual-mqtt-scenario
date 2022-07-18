@@ -14,8 +14,6 @@ class ExplorerView(tk.Frame):
         # selectmode=browse: only one selection allowed
         self.tv_topics = ttk.Treeview(self, selectmode='browse')
         self.tv_topics.heading("#0", text="MQTT Explorer Topics", anchor=tk.W)
-        self.tv_topics.insert("", tk.END, text="/", iid="/",
-                              open=True)  # iid is topic
         self.tv_topics.bind("<<TreeviewSelect>>", self.__on_topic_selected)
         self.tv_topics.pack(fill=tk.BOTH, expand=True)
         self.lb_messages = tk.Listbox(self, height=16)
@@ -41,16 +39,6 @@ class ExplorerView(tk.Frame):
 
 
 class Explorer:
-    mqtt_client = mqtt.Client()
-    view = None
-
-    topictree = {
-        "name": "",
-        "topic": "",
-        "children": {},
-        "messages": [],
-    }
-
     """
     topic_path:
         children:
@@ -61,8 +49,17 @@ class Explorer:
     """
 
     def __init__(self, ):
+        self.mqtt_client = mqtt.Client()
         self.mqtt_client.on_connect = self.on_connect
         self.mqtt_client.on_message = self.on_message
+        self.topictree = {
+            "root": True,
+            "name": "",
+            "topic": "",
+            "children": {},
+            "messages": [],
+        }
+        self.view = None
 
     def run(self):
         try:
@@ -85,15 +82,15 @@ class Explorer:
         self.view.on_topic_selected = self.on_topic_selected
 
     def insert_message(self, topic: str, payload: str):
+        """Inserts a new message into the topic tree."""
         node = self.get_topic_node(topic)
         self.add_message(node, payload)
 
     def get_topic_node(self, topic: str) -> dict:
-        if topic == "/":
-            return self.topictree
+        if topic == "[empty]":
+            return self.topictree["children"][""]
 
         topic_tokens = topic.split("/")
-        topic_tokens.pop(0)
         node = self.topictree
 
         for token in topic_tokens:
@@ -101,15 +98,29 @@ class Explorer:
         return node
 
     def get_child(self, node, child_name) -> dict:
+        """Gets the child topic of a parent topic. If the specified child
+        topic doesn't exist, a new node is created."""
         if "children" not in node:
             node["children"] = {}
 
         children = node["children"]
+        # if child dictionary does not contain key child_name: create new
         if child_name not in children:
-            children[child_name] = self.new_node(
-                child_name, f"{node['topic']}/{child_name}")
-            self.add_node_to_view(child_name, children[child_name]["topic"],
-                                  node["topic"])
+            if "root" in node:  # if parent node is root node: do not append /
+                new_topic_id = child_name
+            else:
+                new_topic_id = f"{node['topic']}/{child_name}"
+            children[child_name] = self.new_node(child_name, new_topic_id)
+            # child_name is view_text, then current_topic as id
+            view_id = children[child_name]["topic"]
+            if view_id == "":  # if view id is empty:
+                view_id = "[empty]"
+
+            parent_view_id = node["topic"]
+            if ("root" not in node) and (parent_view_id == ""):
+                parent_view_id = "[empty]"
+
+            self.add_node_to_view(child_name, view_id, parent_view_id)
 
         return children[child_name]
 
@@ -122,12 +133,12 @@ class Explorer:
         }
 
     def add_node_to_view(self, text: str, current_topic: str,
-                         parent_topic: str, ):
+                         parent_topic: str):
         if self.view is None:
             return
         tree = self.view.tv_topics
         tree.insert(parent_topic, tk.END, text=text, iid=current_topic,
-                    open=True, )
+                    open=True)
 
     def add_message(self, node: dict, message: str):
         node["messages"].append(message)

@@ -114,7 +114,7 @@ class DeviceBase:
             self.generator.event.set()
 
     def get_base_path(self) -> str:
-        return f"/{self.home_id}/{self.room_id}/{self.device_id}/"
+        return f"{self.home_id}/{self.room_id}/{self.device_id}/"
 
     def _client_connect(self, client, userdata, flags, rc):
         if self.on_connect is not None:

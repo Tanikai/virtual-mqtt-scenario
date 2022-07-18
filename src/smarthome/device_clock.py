@@ -44,7 +44,7 @@ class DeviceClock(DeviceBase):
         self.generator = ClockGenerator(self._on_new_data)
 
     def get_base_path(self) -> str:
-        return f"/{self.home_id}/{self.device_id}/"
+        return f"{self.home_id}/{self.device_id}/"
 
     def _on_new_data(self, data: dict):
         handled = super()._on_new_data(data)
