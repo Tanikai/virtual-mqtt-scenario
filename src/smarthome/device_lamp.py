@@ -30,15 +30,12 @@ class DeviceLamp(DeviceBase):
         self._set_dim_topic = self.get_base_path() + "set_dim"
 
     def subscribe_controls(self):
-        self._set_power_topic = self.get_base_path() + "set_power"
-        self._set_dim_topic = self.get_base_path() + "set_dim"
-
         self.mqtt_client.subscribe(self._set_power_topic)
         self.mqtt_client.subscribe(self._set_dim_topic)
 
     def _client_message(self, client, userdata, msg):
         if self.on_message is not None:
-            self.on_message(client, userdata, msg)
+            self.on_message(self, client, userdata, msg)
             return
 
         payload_str = str(msg.payload.decode("utf-8"))
@@ -48,9 +45,6 @@ class DeviceLamp(DeviceBase):
             self.set_power(payload["value"])
         elif msg.topic == self._set_dim_topic:
             self.set_dim(payload["value"])
-
-    def on_run(self):
-        super(DeviceLamp, self).on_run()
 
     def set_power(self, power: bool):
         new = self.state.copy()

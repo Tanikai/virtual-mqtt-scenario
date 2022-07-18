@@ -1,10 +1,11 @@
 import json
-
 from application import App
 from smarthome.device_thermostat import DeviceThermostat, DeviceThermostatView
 from smarthome.device_clock import DeviceClock, DeviceClockView
 from smarthome.device_lamp import DeviceLamp, DeviceLampView
 from smarthome.device_remote import DeviceRemote, DeviceRemoteView
+from smarthome.device_window_blind import DeviceWindowBlind, \
+    DeviceWindowBlindView
 
 
 def remote_lights(self):
@@ -33,7 +34,11 @@ if __name__ == '__main__':
                    DeviceThermostatView)
     app.add_device(DeviceLamp(c, h0, l, "ceiling_lamp"), DeviceLampView)
     app.add_device(DeviceLamp(c, h0, l, "standing_lamp"), DeviceLampView)
-    d = app.add_device(DeviceRemote(c, h0, l, "light_switch"), DeviceRemoteView)
+    d = app.add_device(DeviceRemote(c, h0, l, "light_switch"),
+                       DeviceRemoteView)
     d.set_text("Toggle Lights")
     d.on_click = remote_lights
+
+    d = app.add_device(DeviceWindowBlind(c, h0, l, "window_blind"),
+                       DeviceWindowBlindView)
     app.run()

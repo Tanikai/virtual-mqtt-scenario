@@ -48,14 +48,14 @@ class DeviceBaseView(tk.Frame):
         self.l_valtopic = tk.Label(self, text="DEVICE_TOPIC")
         self.l_valtopic.grid(row=0, column=1, sticky=tk.W)
         # Last Refresh Info
-        self.l_lastrefresh = tk.Label(self, text="Last Refresh:")
-        self.l_lastrefresh.grid(row=1, column=0, sticky=tk.W)
-        self.l_vallastrefresh = tk.Label(self, text="LAST_REFRESH")
-        self.l_vallastrefresh.grid(row=1, column=1, sticky=tk.W)
+        self.l_lastchange = tk.Label(self, text="Last Change:")
+        self.l_lastchange.grid(row=1, column=0, sticky=tk.W)
+        self.l_vallastchange = tk.Label(self, text="LAST_CHANGE")
+        self.l_vallastchange.grid(row=1, column=1, sticky=tk.W)
 
     def set_state(self, state: dict):
         self.l_valtopic.config(text=state["device_topic"])
-        self.l_vallastrefresh.config(text=datetime.now().strftime("%H:%M:%S"))
+        self.l_vallastchange.config(text=datetime.now().strftime("%H:%M:%S"))
 
 
 class DeviceBase:

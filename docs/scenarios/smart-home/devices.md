@@ -49,8 +49,8 @@ This device simulates window blinds that can be rolled up or down.
 Data:
 
 | **Relative Topic** | **Type** | **Description**           |
-| ------------------ | -------- | ------------------------- |
-| ./opened           | Float    | New window blind position |
+|--------------------| -------- | ------------------------- |
+| ./position         | Float    | New window blind position |
 
 Ranges for Data:
 
@@ -59,8 +59,8 @@ Ranges for Data:
 Controls:
 
 | **Relative Topic** | **Type** | **Description**                |
-| ------------------ | -------- | ------------------------------ |
-| ./set_opened       | Float    | Set position for window blinds |
+|--------------------| -------- | ------------------------------ |
+| ./set_position     | Float    | Set position for window blinds |
 
 ---
 
