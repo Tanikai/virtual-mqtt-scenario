@@ -90,6 +90,9 @@ class Explorer:
         self.add_message(node, payload)
 
     def get_topic_node(self, topic: str) -> dict:
+        if topic == "/":
+            return self.topictree
+
         topic_tokens = topic.split("/")
         topic_tokens.pop(0)
         node = self.topictree
