@@ -61,15 +61,16 @@ class DeviceBaseView(tk.Frame):
 class DeviceBase:
     """
     This is the base class for all devices in the scenario.
-
     """
 
-    def __init__(self):
+    def __init__(self, server_info: dict, home_id: str, room_id: str,
+                 device_id: str):
+        self.conn_info = server_info
         self.mqtt_client = mqtt.Client()
 
         self.generator = None
         self.state = {}
-        self.view: DeviceBaseView
+        self.view = None
 
         # Custom functions
         self.on_new_data = None
@@ -80,10 +81,10 @@ class DeviceBase:
         self.on_connect = None
         self.on_message = None  # react to custom messages here
         self._on_subscribe_controls = None
-        
-        self.home_id = "0"
-        self.room_id = "test"
-        self.device_id = "deviceBase"
+
+        self.home_id = home_id
+        self.room_id = room_id
+        self.device_id = device_id
         self.mqtt_client.on_connect = self._client_connect
         self.mqtt_client.on_message = self._client_message
 
@@ -92,10 +93,12 @@ class DeviceBase:
 
     def run(self):
         try:
-            self.mqtt_client.connect("localhost", 1883, 60)
-            self.subscribe_controls()
+            self.mqtt_client.connect(self.conn_info["host"],
+                                     self.conn_info["port"],
+                                     self.conn_info["keepalive"])
+            self.subscribe_controls() #
             if self.on_run is not None:
-                self.on_run()
+                self.on_run(self)
             if self.generator is not None:
                 # run is blocking, start is non-blocking
                 self.generator.start()
@@ -115,7 +118,7 @@ class DeviceBase:
 
     def _client_connect(self, client, userdata, flags, rc):
         if self.on_connect is not None:
-            self.on_connect()
+            self.on_connect(self, client, userdata, flags, rc)
             return
         print("Connected with result code " + str(rc))
 
@@ -124,17 +127,23 @@ class DeviceBase:
         # client.subscribe("#")
 
     def subscribe_controls(self):
+        """
+        Subscribes to topics that are used to control a device.
+        Override this method in child classesif a device should have controls.
+        :return:
+        """
         pass
 
-    # The callback for when a PUBLISH message is received from the server.
     def _client_message(self, client, userdata, msg):
+        """Callback method when a PUBLISH Control Packet is received from the
+        server."""
         if self.on_message is not None:
-            self.on_message(client, userdata, msg)
+            self.on_message(self, client, userdata, msg)
             return
 
     def _on_new_data(self, data: dict) -> bool:
         if self.on_new_data is not None:
-            self.on_new_data(data)
+            self.on_new_data(self, data)
             return True
         else:
             return False
@@ -144,7 +153,7 @@ class DeviceBase:
         self.state["device_topic"] = self.get_base_path()
 
         if self.on_new_state is not None:
-            self.on_new_state()
+            self.on_new_state(self)
 
         if self.view is None:
             return

@@ -79,7 +79,6 @@ class Explorer:
 
     def on_message(self, client, userdata, msg):
         self.insert_message(msg.topic, str(msg.payload.decode("utf-8")))
-        print(msg.topic + " " + str(msg.payload))
 
     def set_view(self, view: ExplorerView):
         self.view = view

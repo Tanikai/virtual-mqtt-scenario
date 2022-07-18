@@ -25,6 +25,10 @@ class ClockGenerator(GeneratorBase):
         # https://bugs.python.org/issue1487389
         self.current_time = datetime.combine(date.today(), time(hour=12))
 
+    def set_time(self, new_hour=12, new_minute=0):
+        self.current_time = datetime.combine(date.today(), time(hour=new_hour,
+                                                                minute=new_minute))
+
     def run(self):
         while not self.event.is_set():
             self.callback({"time": self.current_time.strftime("%H:%M")})
@@ -35,9 +39,12 @@ class ClockGenerator(GeneratorBase):
 
 class DeviceClock(DeviceBase):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, server_info, home, device):
+        super().__init__(server_info, home, "", device)
         self.generator = ClockGenerator(self._on_new_data)
+
+    def get_base_path(self) -> str:
+        return f"/{self.home_id}/{self.device_id}/"
 
     def _on_new_data(self, data: dict):
         handled = super()._on_new_data(data)

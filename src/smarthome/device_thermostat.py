@@ -40,8 +40,9 @@ class ThermostatGenerator(GeneratorBase):
 
 class DeviceThermostat(DeviceBase):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, server_info: dict, home_id: str, room_id: str,
+                 device_id: str):
+        super().__init__(server_info, home_id, room_id, device_id)
         self.generator = ThermostatGenerator(self._on_new_data)
 
     def _on_new_data(self, data: dict):

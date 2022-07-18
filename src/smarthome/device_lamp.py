@@ -22,8 +22,9 @@ class DeviceLampView(DeviceBaseView):
 
 class DeviceLamp(DeviceBase):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, server_info: dict, home_id: str, room_id: str,
+                 device_id: str):
+        super().__init__(server_info, home_id, room_id, device_id)
 
         self._set_power_topic = self.get_base_path() + "set_power"
         self._set_dim_topic = self.get_base_path() + "set_dim"

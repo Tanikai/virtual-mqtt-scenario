@@ -45,6 +45,7 @@ class App:
         f.pack(side=tk.TOP, anchor=tk.NW, padx=5, pady=5)
         device.set_view(f)
         self.views.append(f)
+        return device
 
     def cleanup(self):
         for d in self.devices:
