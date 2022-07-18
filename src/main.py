@@ -1,6 +1,7 @@
 from application import App
 from smarthome.device_thermostat import DeviceThermostat, DeviceThermostatView
 from smarthome.device_clock import DeviceClock, DeviceClockView
+from smarthome.device_lamp import DeviceLamp, DeviceLampView
 
 if __name__ == '__main__':
     app = App()
@@ -8,4 +9,5 @@ if __name__ == '__main__':
     # create new instance of DeviceThermostat, but only pass constructor
     app.add_device(DeviceClock(), DeviceClockView)
     app.add_device(DeviceThermostat(), DeviceThermostatView)
+    app.add_device(DeviceLamp(), DeviceLampView)
     app.run()

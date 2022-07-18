@@ -21,6 +21,8 @@ class ClockGenerator(GeneratorBase):
 
     def __init__(self, callback):
         super().__init__(callback)
+        # datetime object is used to wrap overflow from 23:59 to 00:00
+        # https://bugs.python.org/issue1487389
         self.current_time = datetime.combine(date.today(), time(hour=12))
 
     def run(self):
