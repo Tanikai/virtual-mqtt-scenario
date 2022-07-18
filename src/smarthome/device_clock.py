@@ -42,6 +42,7 @@ class DeviceClock(DeviceBase):
     def __init__(self, server_info, home, device):
         super().__init__(server_info, home, "", device)
         self.generator = ClockGenerator(self._on_new_data)
+        self.state = {"time": "12:00"}
 
     def get_base_path(self) -> str:
         return f"{self.home_id}/{self.device_id}/"

@@ -42,7 +42,7 @@ class App:
     def add_device(self, device: DeviceBase, view: Type[DeviceBaseView]):
         self.devices.append(device)
         f = view(self.fr_devices)
-        f.pack(side=tk.TOP, anchor=tk.NW, padx=5, pady=5)
+        f.pack(side=tk.TOP, anchor=tk.NW, padx=5, pady=5, fill=tk.X)
         device.set_view(f)
         self.views.append(f)
         return device

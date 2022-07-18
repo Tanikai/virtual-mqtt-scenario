@@ -103,6 +103,8 @@ class DeviceBase:
                 # run is blocking, start is non-blocking
                 self.generator.start()
 
+            self._new_state(self.state)
+
         except ConnectionError as e:
             print("Connection Error to broker:", e)
             return

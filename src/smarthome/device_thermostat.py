@@ -44,6 +44,7 @@ class DeviceThermostat(DeviceBase):
                  device_id: str):
         super().__init__(server_info, home_id, room_id, device_id)
         self.generator = ThermostatGenerator(self._on_new_data)
+        self.state = {"temperature": "20.0"}
 
     def _on_new_data(self, data: dict):
         if self.on_new_data is not None:
