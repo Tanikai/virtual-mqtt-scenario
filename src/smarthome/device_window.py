@@ -28,6 +28,7 @@ class DeviceWindow(DeviceBase):
         super().__init__(server_info, home_id, room_id, device_id)
         self.state = {"opened": False}
         self._set_opened_topic = self.get_base_path() + "set_opened"
+        self._toggle_opened_topic = self.get_base_path() + "toggle_opened"
 
     def subscribe_controls(self):
         self.mqtt_client.subscribe(self._set_opened_topic)
@@ -38,6 +39,9 @@ class DeviceWindow(DeviceBase):
             return
 
         payload = self._decode_payload(msg.payload)
+
+        if msg.topic == self._toggle_opened_topic:
+            self.set_opened(not self.state["opened"])
 
         if "value" not in payload:
             return

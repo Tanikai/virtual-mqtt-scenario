@@ -13,12 +13,18 @@ assignable to a whole house.
 
 The house, room and device IDs are used in the topic structure like this:
 
-/house/room/device_id/
+house/room/device_id/
 
-Example: /house_0/living_room/temperature0/
+Example: house_0/living_room/temperature_sensor0/
 
 For every sensor, there are Data (Publisher) and Control (Subscriber) Topics.
-Control Topics are subscribed automatically by the device.
+Control Topics are subscribed to automatically by the device.
+
+!!! important
+
+    MQTT Topics should not start with a leading slash "/" (Example: /house0/light).
+    When you do this, the part before the slash is treated as a topic name,
+    which means that the first topic name is an empty string.
 
 ## Room-specific devices
 
@@ -97,8 +103,9 @@ Data:
 Controls:
 
 | **Relative Topic** | **Type** | **Description**      |
-| ------------------ | -------- | -------------------- |
+|--------------------|----------|----------------------|
 | ./set_opened       | Boolean  | Open or close window |
+| ./toggle_opened    | None     | Toggle window state  |
 
 ---
 
@@ -120,8 +127,9 @@ Values:
 Controls:
 
 | **Relative Topic** | **Type** | **Description**      |
-| ------------------ | -------- | -------------------- |
+|--------------------|----------|----------------------|
 | ./set_power        | Boolean  | Turn light on or off |
+| ./toggle_power     | None     | Toggle power state   |
 | ./set_dim          | Float    | Dim light            |
 
 ---

@@ -82,11 +82,21 @@ class Explorer:
         self.view.on_topic_selected = self.on_topic_selected
 
     def insert_message(self, topic: str, payload: str):
-        """Inserts a new message into the topic tree."""
+        """
+        Inserts a new message into the topic tree.
+        :param topic: Topic under which the message was published
+        :param payload: Message of the PUBLISH Control Packet
+        :return: None
+        """
         node = self.get_topic_node(topic)
         self.add_message(node, payload)
 
     def get_topic_node(self, topic: str) -> dict:
+        """
+        Returns a topic tree node by topic.
+        :param topic:
+        :return: Node that corresponds to the topic.
+        """
         if topic == "[empty]":
             return self.topictree["children"][""]
 
@@ -98,8 +108,12 @@ class Explorer:
         return node
 
     def get_child(self, node, child_name) -> dict:
-        """Gets the child topic of a parent topic. If the specified child
-        topic doesn't exist, a new node is created."""
+        """
+        Gets the child topic of a parent topic. If the specified child topic doesn't exist, a new node is created.
+        :param node: Parent node
+        :param child_name: Name of the child
+        :return: Dictionary/Child Node
+        """
         if "children" not in node:
             node["children"] = {}
 
@@ -125,6 +139,12 @@ class Explorer:
         return children[child_name]
 
     def new_node(self, name, topic) -> dict:
+        """
+        Creates a new empty node for the topic tree.
+        :param name: Name of the new node.
+        :param topic: Topic that corresponds to this node
+        :return: Newly created topic tree node.
+        """
         return {
             "name": name,
             "topic": topic,
@@ -134,6 +154,14 @@ class Explorer:
 
     def add_node_to_view(self, text: str, current_topic: str,
                          parent_topic: str):
+        """
+        Adds a new tkinter view to the topic tree hierarchy
+        :param text: Text that is shown to the user for the topic token.
+        :param current_topic: Token of the topic
+        :param parent_topic: Parent topic
+        :return: None
+        """
+        """"""
         if self.view is None:
             return
         tree = self.view.tv_topics
@@ -141,6 +169,12 @@ class Explorer:
                     open=True)
 
     def add_message(self, node: dict, message: str):
+        """
+        Adds a new message to the node and refreshes the message count of the view.
+        :param node: Tree node of topic where the message was published.
+        :param message: Message that was published.
+        :return:
+        """
         node["messages"].append(message)
 
         if self.view is None:
@@ -150,5 +184,6 @@ class Explorer:
                   text=f"{node['name']} (Count: {len(node['messages'])})")
 
     def on_topic_selected(self, topic: str):
+        """Callback method when a topic is clicked on by the user."""
         node = self.get_topic_node(topic)
         self.view.set_messages(node["messages"])

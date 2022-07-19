@@ -28,6 +28,7 @@ class DeviceLamp(DeviceBase):
         self.state = {"power": False, "dim": 1.0}
         self._set_power_topic = self.get_base_path() + "set_power"
         self._set_dim_topic = self.get_base_path() + "set_dim"
+        self._toggle_power_topic = self.get_base_path() + "toggle_power"
 
     def subscribe_controls(self):
         self.mqtt_client.subscribe(self._set_power_topic)
@@ -39,6 +40,9 @@ class DeviceLamp(DeviceBase):
             return
 
         payload = self._decode_payload(msg.payload)
+
+        if msg.topic == self._toggle_power_topic:
+            self.set_power(not self.state["power"])
 
         if "value" not in payload:
             return

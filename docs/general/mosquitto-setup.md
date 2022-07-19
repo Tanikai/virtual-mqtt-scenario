@@ -6,7 +6,10 @@ guide describes a MQTT server installation using Docker.
 
 ## Prerequisites
 
+For this guide, you need the following tools:
+
 - Working Docker installation
+- Docker-Compose command line application
 
 ## Setting up the docker container
 
@@ -33,8 +36,8 @@ allow_anonymous true
 connection_messages true
 ```
 
-After you've replicated the folder structure, set the contents of the
-docker-compose.yml file to the following:
+After you've replicated the directory structure and configured mosquitto, set
+the contents of the docker-compose.yml file to the following:
 
 ``` yml
 version: "3"
@@ -53,31 +56,13 @@ services:
      - './log:/mosquitto/log'
 ```
 
-Pull the docker image and start the container with `docker compose up -d`.
+Finally, you can go into the base directory and execute `docker-compose`
 
-After that, you can setup your MQTT user. Your password is hashed and stored in
-the `mosquitto_passwords` file. 
-
-1. Open a shell session inside the docker container with the following command:
-   ``` sh
-   docker exec -it mosquitto sh
-   ```
-2. Execute the The `-c` argument overwrites any existing password file. If you
-   want to add a new user to the password file, run the same command **without**
-   the `-c` argument.
-   ``` sh
-   cd /mosquitto/config
-   mosquitto_passwd -c mosquitto_passwords your_mqtt_username
-   > Password:
-   > Reenter Password:
-   exit
-   ```
-   
-After you've set up your mosquitto user, you can add the following line to the
-bottom of your `mosquitto.conf` file:
-
-```
-password_file mosquitto_passwords
+``` sh
+cd mqtt_container
+docker-compose up -d
 ```
 
-Restart your docker container with `docker restart mosquitto`
+When you check the docker container with `docker ps -a`, you should see a
+container with the name mosquitto running. If it doesn't, check the logs with
+`docker logs mosquitto`.
