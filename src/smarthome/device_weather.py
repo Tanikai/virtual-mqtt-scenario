@@ -1,6 +1,7 @@
 import json
 import tkinter as tk
 from .device_base import DeviceBase, DeviceBaseView, GeneratorBase
+import random
 
 
 class DeviceThermometerView(DeviceBaseView):
@@ -19,20 +20,30 @@ class DeviceThermometerView(DeviceBaseView):
             
             
 class WeatherGenerator(GeneratorBase):
-    weather = ["sunny", "cloudy", "rainy", "thunder"]
-    
+    weather_str = ["clear", "cloudy", "rain"]
+    # transition probabilities
+    weather_probs = [[0.6, 0.3, 0.1], [0.1, 0.3, 0.6], [0.4, 0.1, 0.5]]
+
     def __init__(self, callback):
         super().__init__(callback)
-        self.current_weather = "sunny"
+        self.current_weather = 0
 
     def run(self):
         while not self.event.is_set():
             self.current_weather = self.next_weather(self.current_weather)
-            self.callback({"weather": self.current_weather})
+            self.callback({"weather": self.weather_str[self.current_weather]})
             self.event.wait(10)
 
-    def next_weather(self, current_weather: str) -> str:
-        return "sunny"
+    def next_weather(self, current_weather: int) -> int:
+        # w is the weather today
+        cpd = random.random()
+        current_probs = self.weather_probs[current_weather]
+        for index, weather_prob in enumerate(current_probs):
+            cpd -= weather_prob
+            if cpd <= 0:
+                return index
+        # if not returned before: sum of probabilities are less than 1
+        raise ValueError("probabilities of transitions add up to less than 1")
 
 
 class DeviceWeather(DeviceBase):
