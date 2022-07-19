@@ -22,7 +22,7 @@ Control Topics are subscribed automatically by the device.
 
 ## Room-specific devices
 
-### Thermostat
+### Thermometer
 
 This is a classic temperature and humidity sensor for indoor usage.
 

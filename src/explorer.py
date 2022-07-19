@@ -72,7 +72,7 @@ class Explorer:
 
     def on_connect(self, client, userdata, flags, rc):
         print("Connected with result code " + str(rc))
-        client.subscribe("#")
+        self.mqtt_client.subscribe("#")
 
     def on_message(self, client, userdata, msg):
         self.insert_message(msg.topic, str(msg.payload.decode("utf-8")))
