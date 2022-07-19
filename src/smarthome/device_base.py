@@ -1,6 +1,7 @@
 import paho.mqtt.client as mqtt
 import tkinter as tk
 import typing
+import json
 from datetime import datetime
 from threading import Thread, Event
 
@@ -154,9 +155,33 @@ class DeviceBase:
         self.state = state
         self.state["device_topic"] = self.get_base_path()
 
+        self._state_changed()
+
+    def _state_changed(self):
         if self.on_new_state is not None:
             self.on_new_state(self)
 
-        if self.view is None:
-            return
-        self.view.set_state(self.state)
+        if self.view is not None:
+            self.view.set_state(self.state)
+
+    def _decode_payload(self, payload) -> dict:
+        try:
+            payload_str = str(payload.decode("utf-8"))
+            return json.loads(payload_str)
+        except Exception as e:
+            print("An Error occurred while decoding the json", e)
+            return {}
+
+
+    def _set_new_value(self, key: str, value: any):
+        self.state[key] = value
+        self._state_changed()
+
+    @staticmethod
+    def clamp(n, minn, maxn):
+        if n < minn:
+            return minn
+        elif n > maxn:
+            return maxn
+        else:
+            return n

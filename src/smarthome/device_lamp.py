@@ -38,8 +38,10 @@ class DeviceLamp(DeviceBase):
             self.on_message(self, client, userdata, msg)
             return
 
-        payload_str = str(msg.payload.decode("utf-8"))
-        payload = json.loads(payload_str)
+        payload = self._decode_payload(msg.payload)
+
+        if "value" not in payload:
+            return
 
         if msg.topic == self._set_power_topic:
             self.set_power(payload["value"])
@@ -47,11 +49,8 @@ class DeviceLamp(DeviceBase):
             self.set_dim(payload["value"])
 
     def set_power(self, power: bool):
-        new = self.state.copy()
-        new["power"] = power
-        self._new_state(new)
+        self._set_new_value("power", power)
 
     def set_dim(self, dim: float):
-        new = self.state.copy()
-        new["dim"] = dim
-        self._new_state(new)
+        dim = self.clamp(dim, 0.0, 1.0)
+        self._set_new_value("dim", dim)

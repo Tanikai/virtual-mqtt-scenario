@@ -9,7 +9,7 @@ from smarthome.device_window_blind import DeviceWindowBlind, \
 
 
 def remote_lights(self):
-    self.mqtt_client.publish("/home0/lights/", json.dumps({"value": True}))
+    self.mqtt_client.publish("home0/living_room/ceiling_lamp/set_power", json.dumps({"value": True}))
 
 
 def init_clock(self):
@@ -32,7 +32,6 @@ if __name__ == '__main__':
     d.on_run = init_clock
     app.add_device(DeviceThermometer(c, h0, l, "thermometer0"),
                    DeviceThermometerView)
-    app.add_
     app.add_device(DeviceLamp(c, h0, l, "ceiling_lamp"), DeviceLampView)
     app.add_device(DeviceLamp(c, h0, l, "standing_lamp"), DeviceLampView)
     d = app.add_device(DeviceRemote(c, h0, l, "light_switch"),
