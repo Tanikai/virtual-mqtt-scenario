@@ -23,6 +23,7 @@ class DeviceWindowBlind(DeviceBase):
                  device_id: str):
         super().__init__(server_info, home_id, room_id, device_id)
         self.state = {"position": 1.0}
+        self._position_topic = self.get_base_path() + "position"
         self._set_position_topic = self.get_base_path() + "set_position"
 
     def subscribe_controls(self):
@@ -42,4 +43,7 @@ class DeviceWindowBlind(DeviceBase):
 
     def set_position(self, position: float):
         position = self.clamp(position, 0.0, 1.0)
+        if self.state["position"] != position:
+            self.mqtt_client.publish(self._position_topic,
+                                     json.dumps({"position": position}))
         self._set_new_value("position", position)

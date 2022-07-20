@@ -27,6 +27,7 @@ class DeviceWindow(DeviceBase):
                  device_id: str):
         super().__init__(server_info, home_id, room_id, device_id)
         self.state = {"opened": False}
+        self._opened_topic = self.get_base_path() + "opened"
         self._set_opened_topic = self.get_base_path() + "set_opened"
         self._toggle_opened_topic = self.get_base_path() + "toggle_opened"
 
@@ -50,4 +51,7 @@ class DeviceWindow(DeviceBase):
             self.set_opened(payload["value"])
 
     def set_opened(self, opened: bool):
+        if self.state["opened"] is not opened:
+            self.mqtt_client.publish(self._opened_topic,
+                                     json.dumps({"opened": opened}))
         self._set_new_value("opened", opened)
