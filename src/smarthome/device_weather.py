@@ -4,7 +4,7 @@ from .device_base import DeviceBase, DeviceBaseView, GeneratorBase
 import random
 
 
-class DeviceThermometerView(DeviceBaseView):
+class DeviceWeatherView(DeviceBaseView):
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -32,7 +32,8 @@ class WeatherGenerator(GeneratorBase):
         while not self.event.is_set():
             self.current_weather = self.next_weather(self.current_weather)
             self.callback({"weather": self.weather_str[self.current_weather]})
-            self.event.wait(10)
+
+            self.event.wait(12)
 
     def next_weather(self, current_weather: int) -> int:
         # w is the weather today
@@ -48,19 +49,22 @@ class WeatherGenerator(GeneratorBase):
 
 class DeviceWeather(DeviceBase):
 
-    def __init__(self, server_info: dict, home_id: str, room_id: str,
-                 device_id: str):
-        super().__init__(server_info, home_id, room_id, device_id)
+    def __init__(self, server_info: dict, home_id: str, device_id: str):
+        super().__init__(server_info, home_id, "", device_id)
         self.generator = WeatherGenerator(self._on_new_data)
         self.state = {"weather": "sunny"}
 
+    def get_base_path(self) -> str:
+        return f"{self.home_id}/{self.device_id}/"
+
     def _on_new_data(self, data: dict):
-        if self.on_new_data is not None:
-            self.on_new_data(data)
+        handled = super()._on_new_data(data)
+        if handled:
             return
 
         if "weather" in data:
-            self.mqtt_client.publish(self.get_base_path() + "weather"),
-            json.dumps({"weather": data["weather"]})
+            weather_str = json.dumps({"weather": data["weather"]})
+            self.mqtt_client.publish(
+                self.get_base_path() + "weather", weather_str)
 
         self._new_state(data)

@@ -33,6 +33,7 @@ class DeviceLamp(DeviceBase):
     def subscribe_controls(self):
         self.mqtt_client.subscribe(self._set_power_topic)
         self.mqtt_client.subscribe(self._set_dim_topic)
+        self.mqtt_client.subscribe(self._toggle_power_topic)
 
     def _client_message(self, client, userdata, msg):
         if self.on_message is not None:
