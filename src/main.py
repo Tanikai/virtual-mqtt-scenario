@@ -30,6 +30,7 @@ if __name__ == '__main__':
     }
     h0 = "home0"
     l = "living_room"
+    act_col = 1  # actuator column
 
     # create new instance of DeviceThermometer, but only pass constructor
     clock = DeviceClock(c, h0, "clock0")
@@ -37,15 +38,15 @@ if __name__ == '__main__':
     app.add_device(clock, DeviceClockView)
     app.add_device(DeviceThermometer(c, h0, l, "thermometer0"),
                    DeviceThermometerView)
-    app.add_device(DeviceLamp(c, h0, l, "ceiling_lamp"), DeviceLampView)
-    app.add_device(DeviceLamp(c, h0, l, "standing_lamp"), DeviceLampView)
+    app.add_device(DeviceLamp(c, h0, l, "ceiling_lamp"), DeviceLampView, act_col)
+    app.add_device(DeviceLamp(c, h0, l, "standing_lamp"), DeviceLampView, act_col)
     d = app.add_device(DeviceRemote(c, h0, l, "light_switch"),
                        DeviceRemoteView)
     d.set_text("Toggle Lights")
     d.on_click = remote_lights
 
-    app.add_device(DeviceWindow(c, h0, l, "window0"), DeviceWindowView)
+    app.add_device(DeviceWindow(c, h0, l, "window0"), DeviceWindowView, act_col)
     app.add_device(DeviceWindowBlind(c, h0, l, "window_blind"),
-                   DeviceWindowBlindView)
+                   DeviceWindowBlindView, act_col)
     app.add_device(DeviceWeather(c, h0, "weather_sensor0"), DeviceWeatherView)
     app.run()

@@ -8,6 +8,7 @@ class DeviceClockView(DeviceBaseView):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.l_device.config(text="Clock", background=self.sensor_color)
         self.l_time = tk.Label(self, text="Current Time:")
         self.l_time.grid(row=self.row_offset, column=0, sticky=tk.W)
         self.l_valtime = tk.Label(self, text="VAL_TIME")

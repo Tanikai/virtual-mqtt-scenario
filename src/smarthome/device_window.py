@@ -7,6 +7,7 @@ class DeviceWindowView(DeviceBaseView):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.l_device.config(text="Window", background=self.actuator_color)
         self.l_opened = tk.Label(self, text="Currently Open:")
         self.l_opened.grid(row=self.row_offset, column=0, sticky=tk.W)
         self.l_valopened = tk.Label(self, text="OPENED_STATUS")

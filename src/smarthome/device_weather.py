@@ -8,6 +8,7 @@ class DeviceWeatherView(DeviceBaseView):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.l_device.config(text="Weather Sensor", background=self.sensor_color)
         self.l_weather = tk.Label(self, text="Current Weather:")
         self.l_weather.grid(row=self.row_offset, column=0, sticky=tk.W)
         self.l_valweather= tk.Label(self, text="VAL_WEATHER")

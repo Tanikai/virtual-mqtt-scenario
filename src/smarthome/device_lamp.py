@@ -7,6 +7,7 @@ class DeviceLampView(DeviceBaseView):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.l_device.config(text="Lamp", background=self.actuator_color)
         self.l_power = tk.Label(self, text="Current Status:")
         self.l_power.grid(row=self.row_offset, column=0, sticky=tk.W)
         self.l_valpower = tk.Label(self, text="POWER_STATUS")

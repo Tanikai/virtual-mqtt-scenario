@@ -14,6 +14,7 @@ class App:
     fr_devices = None
     devices = []
     views = []
+    device_count = [0, 0, 0, 0, 0]
 
     def __init__(self):
         """Constructor for the App class."""
@@ -53,18 +54,22 @@ class App:
             print("Could not connect to MQTT broker, message:", e)
             self.cleanup()
 
-    def add_device(self, device: DeviceBase, view: Type[DeviceBaseView]):
+    def add_device(self, device: DeviceBase, view: Type[DeviceBaseView],
+                   d_col=0):
         """
         Adds a new device to the simulation.
         :param device: An *instance* of a device. Configuration can be done
         before or after adding.
         :param view: A *class reference* to the view class that is used for the
         device.
+        :param d_col: Column for device.
         :return: A reference to the added device for convenience.
         """
         self.devices.append(device)
         f = view(self.fr_devices)
-        f.pack(side=tk.TOP, anchor=tk.NW, padx=5, pady=5, fill=tk.X)
+        f.grid(column=d_col, row=self.device_count[d_col], pady=5, padx=5,
+               sticky=tk.NW)
+        self.device_count[d_col] += 1
         device.set_view(f)
         self.views.append(f)
         return device

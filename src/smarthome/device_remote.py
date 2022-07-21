@@ -6,6 +6,7 @@ class DeviceRemoteView(DeviceBaseView):
 
     def __init__(self, parent=None, bt_callback=None):
         super().__init__(parent)
+        self.l_device.config(text="Remote", background=self.sensor_color)
         self.bt_remote = tk.Button(self, text="", command=bt_callback)
         self.bt_remote.grid(row=self.row_offset, column=1, sticky=tk.W)
         self.on_click = bt_callback

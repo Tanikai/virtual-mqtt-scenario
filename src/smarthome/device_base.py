@@ -34,25 +34,29 @@ class GeneratorBase(Thread):
 
 
 class DeviceBaseView(tk.Frame):
+    sensor_color = "medium purple"
+    actuator_color = "orange"
     """
     This is the base class for the Device View.
     """
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.row_offset = 2
+        self.row_offset = 3
         # General Config
         self.config(borderwidth=2, relief="groove")
+        self.l_device = tk.Label(self, text="device_not_specified________", )
+        self.l_device.grid(row=0, sticky=tk.W+tk.N+tk.S+tk.E, columnspan=2)
         # Topic Info
         self.l_topic = tk.Label(self, text="Topic:")
-        self.l_topic.grid(row=0, column=0, sticky=tk.W)
+        self.l_topic.grid(row=1, column=0, sticky=tk.W)
         self.l_valtopic = tk.Label(self, text="DEVICE_TOPIC")
-        self.l_valtopic.grid(row=0, column=1, sticky=tk.W)
+        self.l_valtopic.grid(row=1, column=1, sticky=tk.W)
         # Last Refresh Info
-        self.l_lastchange = tk.Label(self, text="Last Change:")
-        self.l_lastchange.grid(row=1, column=0, sticky=tk.W)
+        self.l_lastchange = tk.Label(self, text="Last Status Change:")
+        self.l_lastchange.grid(row=2, column=0, sticky=tk.W)
         self.l_vallastchange = tk.Label(self, text="LAST_CHANGE")
-        self.l_vallastchange.grid(row=1, column=1, sticky=tk.W)
+        self.l_vallastchange.grid(row=2, column=1, sticky=tk.W)
 
     def set_state(self, state: dict):
         self.l_valtopic.config(text=state["device_topic"])

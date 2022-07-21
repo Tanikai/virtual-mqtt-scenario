@@ -8,6 +8,7 @@ class DeviceThermometerView(DeviceBaseView):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.l_device.config(text="Thermometer", background=self.sensor_color)
         self.l_temp = tk.Label(self, text="Temperature:")
         self.l_temp.grid(row=self.row_offset, column=0, sticky=tk.W)
         self.l_valtemp = tk.Label(self, text="VAL_TEMPERATURE")
