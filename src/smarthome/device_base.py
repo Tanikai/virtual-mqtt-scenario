@@ -93,22 +93,17 @@ class DeviceBase:
         self.view = view
 
     def run(self):
-        try:
-            self.mqtt_client.connect(self.conn_info["host"],
-                                     self.conn_info["port"],
-                                     self.conn_info["keepalive"])
-            self.subscribe_controls() #
-            if self.on_run is not None:
-                self.on_run(self)
-            if self.generator is not None:
-                # run is blocking, start is non-blocking
-                self.generator.start()
+        self.mqtt_client.connect(self.conn_info["host"],
+                                 self.conn_info["port"],
+                                 self.conn_info["keepalive"])
+        self.subscribe_controls() #
+        if self.on_run is not None:
+            self.on_run(self)
+        if self.generator is not None:
+            # run is blocking, start is non-blocking
+            self.generator.start()
 
-            self._new_state(self.state)
-
-        except ConnectionError as e:
-            print("Connection Error to broker:", e)
-            return
+        self._new_state(self.state)
 
         self.mqtt_client.loop_start()
 

@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox
 from smarthome.device_base import DeviceBase, DeviceBaseView
 from typing import Type
 from explorer import Explorer, ExplorerView
@@ -42,9 +43,15 @@ class App:
     def start_scenario(self):
         """This method runs the simulation by running all devices."""
         self.bt_start.config(state=tk.DISABLED)
-        self.explorer.run()
-        for d in self.devices:
-            d.run()
+        try:
+            self.explorer.run()
+            for d in self.devices:
+                d.run()
+        except ConnectionError as e:
+            messagebox.showerror("Connection to MQTT broker failed",
+                                 "Connection to MQTT broker failed; not started or wrong host/port?")
+            print("Could not connect to MQTT broker, message:", e)
+            self.cleanup()
 
     def add_device(self, device: DeviceBase, view: Type[DeviceBaseView]):
         """

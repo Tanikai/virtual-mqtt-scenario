@@ -62,12 +62,7 @@ class Explorer:
         self.view = None
 
     def run(self):
-        try:
-            self.mqtt_client.connect("localhost", 1883, 60)
-        except ConnectionError as e:
-            print("Connection Error to broker:", e)
-            return
-
+        self.mqtt_client.connect("localhost", 1883, 60)
         self.mqtt_client.loop_start()
 
     def on_connect(self, client, userdata, flags, rc):
