@@ -23,8 +23,9 @@ class App:
                                   text="Start Scenario",
                                   command=self.start_scenario)
         self.bt_start.pack(side=tk.TOP, anchor=tk.W, padx=5, pady=5)
-        self.fr_devices = tk.Frame(self.root, background="white")
-        self.fr_devices.pack(side=tk.LEFT, fill=tk.BOTH)
+        self.fr_devices = tk.Frame(self.root, background="white",
+                                   borderwidth=2, relief="ridge")
+        self.fr_devices.pack(side=tk.LEFT, fill=tk.BOTH, padx=5, pady=5)
 
         self.fr_explorer = ExplorerView(self.root)
         self.fr_explorer.pack(side=tk.RIGHT, anchor=tk.NE, padx=5, pady=5,
@@ -66,9 +67,9 @@ class App:
         :return: A reference to the added device for convenience.
         """
         self.devices.append(device)
-        f = view(self.fr_devices)
+        f = view(self.fr_devices)  # create instance of view
         f.grid(column=d_col, row=self.device_count[d_col], pady=5, padx=5,
-               sticky=tk.NW)
+               sticky="nsew")
         self.device_count[d_col] += 1
         device.set_view(f)
         self.views.append(f)

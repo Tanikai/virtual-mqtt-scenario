@@ -45,15 +45,15 @@ class DeviceBaseView(tk.Frame):
         self.row_offset = 3
         # General Config
         self.config(borderwidth=2, relief="groove")
-        self.l_device = tk.Label(self, text="device_not_specified________", )
-        self.l_device.grid(row=0, sticky=tk.W+tk.N+tk.S+tk.E, columnspan=2)
+        self.l_device = tk.Label(self, text="device_not_specified", padx=5)
+        self.l_device.grid(row=0, column=0, sticky=tk.W)
         # Topic Info
         self.l_topic = tk.Label(self, text="Topic:")
         self.l_topic.grid(row=1, column=0, sticky=tk.W)
         self.l_valtopic = tk.Label(self, text="DEVICE_TOPIC")
         self.l_valtopic.grid(row=1, column=1, sticky=tk.W)
         # Last Refresh Info
-        self.l_lastchange = tk.Label(self, text="Last Status Change:")
+        self.l_lastchange = tk.Label(self, text="Last Change:")
         self.l_lastchange.grid(row=2, column=0, sticky=tk.W)
         self.l_vallastchange = tk.Label(self, text="LAST_CHANGE")
         self.l_vallastchange.grid(row=2, column=1, sticky=tk.W)

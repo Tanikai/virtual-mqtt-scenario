@@ -17,9 +17,9 @@ class DeviceWindowView(DeviceBaseView):
         super().set_state(state)
         if "opened" in state:
             if state["opened"]:
-                self.l_valopened.config(text="Yes")
+                self.l_valopened.config(text="Open", background="green")
             else:
-                self.l_valopened.config(text="No")
+                self.l_valopened.config(text="Closed", background="red")
 
 
 class DeviceWindow(DeviceBase):

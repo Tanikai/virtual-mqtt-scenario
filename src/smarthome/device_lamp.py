@@ -16,9 +16,9 @@ class DeviceLampView(DeviceBaseView):
     def set_state(self, state: dict):
         super().set_state(state)
         if state["power"]:
-            self.l_valpower.config(text="💡⚡")
+            self.l_valpower.config(text="Turned ON", background="green")
         else:
-            self.l_valpower.config(text="💡❌")
+            self.l_valpower.config(text="Turned OFF", background="red")
 
 
 class DeviceLamp(DeviceBase):
