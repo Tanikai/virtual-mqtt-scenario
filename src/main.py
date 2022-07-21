@@ -1,5 +1,9 @@
 import json
 from application import App
+import configparser
+import sys
+from os.path import exists
+from os import getcwd
 from smarthome.device_thermometer import DeviceThermometer, \
     DeviceThermometerView
 from smarthome.device_clock import DeviceClock, DeviceClockView
@@ -20,14 +24,35 @@ def init_clock(self):
     self.generator.set_time(15, 0)
 
 
+def read_config_file(path: str) -> dict:
+    parser = configparser.ConfigParser()
+    parser.read(path)
+
+    config = {}
+    section = "mqtt broker"
+    config["host"] = parser.get(section, "host")
+    config["port"] = int(parser.get(section, "port"))
+    config["keepalive"] = int(parser.get(section, "keepalive"))
+
+    return config
+
+
+def get_config_dict() -> dict:
+    if len(sys.argv) >= 2:  # If env file is passed
+        config_name = sys.argv[1]
+    else:
+        config_name = getcwd() + "/default.ini"
+        if not exists(config_name):
+            config_name = getcwd() + "/localhost.ini"
+
+    return read_config_file(config_name)
+
+
 if __name__ == '__main__':
     app = App()
 
-    c = {
-        "host": "localhost",
-        "port": 1883,
-        "keepalive": 60,
-    }
+    c = get_config_dict()
+
     h0 = "home0"
     l = "living_room"
     act_col = 1  # actuator column
