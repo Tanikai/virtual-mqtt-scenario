@@ -1,3 +1,4 @@
+import json
 import tkinter as tk
 from .device_base import DeviceBase, DeviceBaseView, GeneratorBase
 from datetime import datetime, time, timedelta, date
@@ -39,8 +40,8 @@ class ClockGenerator(GeneratorBase):
 
 class DeviceClock(DeviceBase):
 
-    def __init__(self, server_info, home, device):
-        super().__init__(server_info, home, "", device)
+    def __init__(self, server_info, home_id, device_id):
+        super().__init__(server_info, home_id, "", device_id)
         self.generator = ClockGenerator(self._on_new_data)
         self.state = {"time": "12:00"}
 
@@ -52,8 +53,6 @@ class DeviceClock(DeviceBase):
         if handled:
             return
 
-        self.mqtt_client.publish(
-            self.get_base_path() + "time",
-            data["time"]
-        )
+        self.mqtt_client.publish(self.get_base_path() + "time",
+                                 json.dumps({"time": data["time"]}))
         self._new_state(data)

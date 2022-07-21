@@ -8,11 +8,12 @@ from smarthome.device_remote import DeviceRemote, DeviceRemoteView
 from smarthome.device_window_blind import DeviceWindowBlind, \
     DeviceWindowBlindView
 from smarthome.device_window import DeviceWindow, DeviceWindowView
+from smarthome.device_weather import DeviceWeather, DeviceWeatherView
 
 
 def remote_lights(self):
-    self.mqtt_client.publish("home0/living_room/ceiling_lamp/set_power",
-                             json.dumps({"value": True}))
+    self.mqtt_client.publish("home0/living_room/ceiling_lamp/toggle_power",
+                             json.dumps({"sender": "remote"}))
 
 
 def init_clock(self):
@@ -44,6 +45,7 @@ if __name__ == '__main__':
     d.on_click = remote_lights
 
     app.add_device(DeviceWindow(c, h0, l, "window0"), DeviceWindowView)
-    d = app.add_device(DeviceWindowBlind(c, h0, l, "window_blind"),
-                       DeviceWindowBlindView)
+    app.add_device(DeviceWindowBlind(c, h0, l, "window_blind"),
+                   DeviceWindowBlindView)
+    app.add_device(DeviceWeather(c, h0, "weather_sensor0"), DeviceWeatherView)
     app.run()

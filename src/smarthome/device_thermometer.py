@@ -82,8 +82,8 @@ class DeviceThermometer(DeviceBase):
         self.state = {"temperature": "20.0", "humidity": 75}
 
     def _on_new_data(self, data: dict):
-        if self.on_new_data is not None:
-            self.on_new_data(data)
+        handled = super()._on_new_data(data)
+        if handled:
             return
 
         if "temperature" in data:

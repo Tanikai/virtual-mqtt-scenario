@@ -26,6 +26,7 @@ class DeviceLamp(DeviceBase):
                  device_id: str):
         super().__init__(server_info, home_id, room_id, device_id)
         self.state = {"power": False, "dim": 1.0}
+        self._power_topic = self.get_base_path() + "power"
         self._set_power_topic = self.get_base_path() + "set_power"
         self._set_dim_topic = self.get_base_path() + "set_dim"
         self._toggle_power_topic = self.get_base_path() + "toggle_power"
@@ -33,6 +34,7 @@ class DeviceLamp(DeviceBase):
     def subscribe_controls(self):
         self.mqtt_client.subscribe(self._set_power_topic)
         self.mqtt_client.subscribe(self._set_dim_topic)
+        self.mqtt_client.subscribe(self._toggle_power_topic)
 
     def _client_message(self, client, userdata, msg):
         if self.on_message is not None:
@@ -53,6 +55,9 @@ class DeviceLamp(DeviceBase):
             self.set_dim(payload["value"])
 
     def set_power(self, power: bool):
+        if self.state["power"] is not power:
+            self.mqtt_client.publish(self._power_topic,
+                                     json.dumps({"power": power}))
         self._set_new_value("power", power)
 
     def set_dim(self, dim: float):
