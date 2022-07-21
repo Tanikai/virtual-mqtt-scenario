@@ -4,10 +4,21 @@ If you've already installed Python and an IDE, you can [proceed with "Getting St
 
 ## Installing Python
 
+### Windows
+
 If you haven't installed Python yet, [you can download the installer here](https://www.python.org/downloads/).
 
 This project requires Python 3.9 or newer, so make sure you download the correct
 one.
+
+### Linux distributions
+
+Install Python with the package manager of your distribution.
+
+!!! info 
+    If you get the error "No module named 'tkinter'", you have to install the
+    Python package with tkinter included. For example, *python3-tk* for ubuntu.
+    [Here is a relevant StackOverflow post.](https://stackoverflow.com/questions/25905540/importerror-no-module-named-tkinter)
 
 ## Installing an IDE of your choice
 
