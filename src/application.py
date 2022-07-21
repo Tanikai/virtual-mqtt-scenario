@@ -51,7 +51,8 @@ class App:
                 d.run()
         except ConnectionError as e:
             messagebox.showerror("Connection to MQTT broker failed",
-                                 "Connection to MQTT broker failed; not started or wrong host/port?")
+                                 "Connection to MQTT broker failed; not "
+                                 "started or wrong host/port?")
             print("Could not connect to MQTT broker, message:", e)
             self.cleanup()
 

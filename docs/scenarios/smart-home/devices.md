@@ -6,7 +6,7 @@ Every device can be assigned to a house and room. Some devices are only
 assignable to a whole house.
 
 | Attribute | Description                          |
-| --------- | ------------------------------------ |
+|-----------|--------------------------------------|
 | house_id  | The house the device is assigned to. |
 | room_id   | The room the device is assigned to.  |
 | device_id | The device's own id.                 |
@@ -35,7 +35,7 @@ This is a classic temperature and humidity sensor for indoor usage.
 Data:
 
 | **Relative Topic** | **Type** | **Description**                   |
-| ------------------ | -------- | --------------------------------- |
+|--------------------|----------|-----------------------------------|
 | ./temperature      | Float    | New temperature reading (Celsius) |
 | ./humidity         | Float    | New humidity reading              |
 
@@ -55,7 +55,7 @@ This device simulates window blinds that can be rolled up or down.
 Data:
 
 | **Relative Topic** | **Type** | **Description**           |
-|--------------------| -------- | ------------------------- |
+|--------------------|----------|---------------------------|
 | ./position         | Float    | New window blind position |
 
 Ranges for Data:
@@ -65,7 +65,7 @@ Ranges for Data:
 Controls:
 
 | **Relative Topic** | **Type** | **Description**                |
-|--------------------| -------- | ------------------------------ |
+|--------------------|----------|--------------------------------|
 | ./set_position     | Float    | Set position for window blinds |
 
 ---
@@ -78,26 +78,26 @@ temperatures.
 Data:
 
 | **Relative Topic** | **Type** | **Description**                    |
-| ------------------ | -------- | ---------------------------------- |
+|--------------------|----------|------------------------------------|
 | ./temperature      | Float    | New target temperature of radiator |
 
 Controls:
 
 | **Relative Topic** | **Type** | **Description**              |
-| ------------------ | -------- | ---------------------------- |
+|--------------------|----------|------------------------------|
 | ./set_temperature  | Float    | Set a new target temperature |
 
 ---
 
 ### Window
 
-This devices simulates a window sensor that can detect whether a window is
+This device simulates a window sensor that can detect whether a window is
 opened or closed.
 
 Data:
 
 | **Relative Topic** | **Type** | **Description**   |
-| ------------------ | -------- | ----------------- |
+|--------------------|----------|-------------------|
 | ./opened           | Boolean  | New window status |
 
 Controls:
@@ -116,7 +116,7 @@ This device simulates a light source. It can be turned on/off and dimmed.
 Data:
 
 | **Relative Topic** | **Type** | **Description**           |
-| ------------------ | -------- | ------------------------- |
+|--------------------|----------|---------------------------|
 | ./power            | Boolean  | New power status of light |
 | ./dim              | Float    | New dimness of light      |
 
@@ -142,7 +142,7 @@ window opener/closer.
 Data:
 
 | **Relative Topic** | **Type** | **Description**                     |
-| ------------------ | -------- | ----------------------------------- |
+|--------------------|----------|-------------------------------------|
 | ./pressed          | None     | Is published when button is pressed |
 
 Controls: none
@@ -158,7 +158,7 @@ This sensor simulates weather changes. It also measures the outside temperature.
 Data:
 
 | **Relative Topic**    | **Type** | **Description**         |
-| --------------------- | -------- | ----------------------- |
+|-----------------------|----------|-------------------------|
 | ./weather             | Text     | New weather status      |
 | ./outside_temperature | Float    | New temperature reading |
 
@@ -180,13 +180,13 @@ published every 20 virtual minutes (or 4 real seconds).
 
 Data:
 
-| **Relative Topic** | **Type**     | **Description**       |
-| ------------------ | ------------ | --------------------- |
-| ./time             | String (UTC) | New time event        |
-| ./interval         | Integer      | New interval of clock |
+| **Relative Topic** | **Type**       | **Description**       |
+|--------------------|----------------|-----------------------|
+| ./time             | String (HH:MM) | New time event        |
+| ./interval         | Integer        | New interval of clock |
 
 Controls:
 
 | **Relative Topic** | **Type** | **Description**              |
-| ------------------ | -------- | ---------------------------- |
+|--------------------|----------|------------------------------|
 | ./set_interval     | Integer  | Set interval of clock events |

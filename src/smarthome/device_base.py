@@ -100,7 +100,7 @@ class DeviceBase:
         self.mqtt_client.connect(self.conn_info["host"],
                                  self.conn_info["port"],
                                  self.conn_info["keepalive"])
-        self.subscribe_controls() #
+        self.subscribe_controls()  # subscribe to control topics
         if self.on_run is not None:
             self.on_run(self)
         if self.generator is not None:
@@ -163,14 +163,14 @@ class DeviceBase:
         if self.view is not None:
             self.view.set_state(self.state)
 
-    def _decode_payload(self, payload) -> dict:
+    @staticmethod
+    def _decode_payload(payload) -> dict:
         try:
             payload_str = str(payload.decode("utf-8"))
             return json.loads(payload_str)
         except Exception as e:
             print("An Error occurred while decoding the json", e)
             return {}
-
 
     def _set_new_value(self, key: str, value: any):
         self.state[key] = value
@@ -180,7 +180,7 @@ class DeviceBase:
     def clamp(n, min_n, max_n):
         """
         Limits n to the bounds defined by minn and maxn.
-        Source: https://stackoverflow.com/questions/5996881/how-to-limit-a-number-to-be-within-a-specified-range-python
+        Source: https://stackoverflow.com/questions/5996881
         :param n: Number to be clamped
         :param min_n: Minimum value (inclusive)
         :param max_n: Maximum value (inclusive)

@@ -104,7 +104,8 @@ class Explorer:
 
     def get_child(self, node, child_name) -> dict:
         """
-        Gets the child topic of a parent topic. If the specified child topic doesn't exist, a new node is created.
+        Gets the child topic of a parent topic. If the specified child topic
+        doesn't exist, a new node is created.
         :param node: Parent node
         :param child_name: Name of the child
         :return: Dictionary/Child Node
@@ -133,7 +134,8 @@ class Explorer:
 
         return children[child_name]
 
-    def new_node(self, name, topic) -> dict:
+    @staticmethod
+    def new_node(name, topic) -> dict:
         """
         Creates a new empty node for the topic tree.
         :param name: Name of the new node.
@@ -165,7 +167,8 @@ class Explorer:
 
     def add_message(self, node: dict, message: str):
         """
-        Adds a new message to the node and refreshes the message count of the view.
+        Adds a new message to the node and refreshes the message count of the
+        view.
         :param node: Tree node of topic where the message was published.
         :param message: Message that was published.
         :return:

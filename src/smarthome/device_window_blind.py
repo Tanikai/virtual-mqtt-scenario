@@ -7,7 +7,8 @@ class DeviceWindowBlindView(DeviceBaseView):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.l_device.config(text="Window Blind", background=self.actuator_color)
+        self.l_device.config(text="Window Blind",
+                             background=self.actuator_color)
         self.l_position = tk.Label(self, text="Current Position:")
         self.l_position.grid(row=self.row_offset, column=0, sticky=tk.W)
         self.l_valposition = tk.Label(self, text="CURRENT_POSITION")

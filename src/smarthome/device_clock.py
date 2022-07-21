@@ -28,8 +28,8 @@ class ClockGenerator(GeneratorBase):
         self.current_time = datetime.combine(date.today(), time(hour=12))
 
     def set_time(self, new_hour=12, new_minute=0):
-        self.current_time = datetime.combine(date.today(), time(hour=new_hour,
-                                                                minute=new_minute))
+        self.current_time = datetime.combine(
+            date.today(), time(hour=new_hour, minute=new_minute))
 
     def run(self):
         while not self.event.is_set():

@@ -28,25 +28,25 @@ def init_sample_scenario(app: App, c: dict):
     :return:
     """
     h0 = "home0"
-    l = "living_room"
+    l_room = "living_room"
     act_col = 1  # actuator column
     clock = DeviceClock(c, h0, "clock0")
     clock.on_run = _init_clock
     # create new instance of DeviceThermometer, but only pass constructor
     app.add_device(clock, DeviceClockView)
-    app.add_device(DeviceThermometer(c, h0, l, "thermometer0"),
+    app.add_device(DeviceThermometer(c, h0, l_room, "thermometer0"),
                    DeviceThermometerView)
-    app.add_device(DeviceLamp(c, h0, l, "ceiling_lamp"), DeviceLampView,
+    app.add_device(DeviceLamp(c, h0, l_room, "ceiling_lamp"), DeviceLampView,
                    act_col)
-    app.add_device(DeviceLamp(c, h0, l, "standing_lamp"), DeviceLampView,
+    app.add_device(DeviceLamp(c, h0, l_room, "standing_lamp"), DeviceLampView,
                    act_col)
-    d = app.add_device(DeviceRemote(c, h0, l, "light_switch"),
+    d = app.add_device(DeviceRemote(c, h0, l_room, "light_switch"),
                        DeviceRemoteView)
     d.set_text("Toggle Lights")
     d.on_click = _remote_lights
 
-    app.add_device(DeviceWindow(c, h0, l, "window0"), DeviceWindowView,
+    app.add_device(DeviceWindow(c, h0, l_room, "window0"), DeviceWindowView,
                    act_col)
-    app.add_device(DeviceWindowBlind(c, h0, l, "window_blind"),
+    app.add_device(DeviceWindowBlind(c, h0, l_room, "window_blind"),
                    DeviceWindowBlindView, act_col)
     app.add_device(DeviceWeather(c, h0, "weather_sensor0"), DeviceWeatherView)

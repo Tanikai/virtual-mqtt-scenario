@@ -8,18 +8,19 @@ class DeviceWeatherView(DeviceBaseView):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.l_device.config(text="Weather Sensor", background=self.sensor_color)
+        self.l_device.config(text="Weather Sensor",
+                             background=self.sensor_color)
         self.l_weather = tk.Label(self, text="Current Weather:")
         self.l_weather.grid(row=self.row_offset, column=0, sticky=tk.W)
-        self.l_valweather= tk.Label(self, text="VAL_WEATHER")
+        self.l_valweather = tk.Label(self, text="VAL_WEATHER")
         self.l_valweather.grid(row=self.row_offset, column=1, sticky=tk.W)
 
-    def set_state(self, state:dict):
+    def set_state(self, state: dict):
         super().set_state(state)
         if "weather" in state:
             self.l_valweather.config(text=state["weather"])
-            
-            
+
+
 class WeatherGenerator(GeneratorBase):
     weather_str = ["clear", "cloudy", "rain"]
     # transition probabilities

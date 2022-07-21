@@ -1,5 +1,5 @@
 import tkinter as tk
-from .device_base import DeviceBase, DeviceBaseView, GeneratorBase
+from .device_base import DeviceBase, DeviceBaseView
 
 
 class DeviceRemoteView(DeviceBaseView):

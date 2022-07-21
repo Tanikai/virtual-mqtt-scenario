@@ -1,4 +1,4 @@
-# Adding new MQTT devices to simulation
+# Setting up your MQTT scenario
 
 
 

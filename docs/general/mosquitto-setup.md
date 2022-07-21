@@ -1,8 +1,8 @@
 # Setting up a private MQTT server for development
 
-A privately hosted MQTT server is recommend when you test the Virtual MQTT
-Scenario, as you can prevent unnecessary traffic to public ones. The following
-guide describes a MQTT server installation using Docker.
+When you test the virtual MQTT scenario, a privately hosted broker is
+recommended to prevent unnecessary traffic to public ones. The following guide
+describes a MQTT server installation using Docker.
 
 ## Prerequisites
 
