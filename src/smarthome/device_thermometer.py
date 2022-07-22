@@ -2,6 +2,7 @@ import json
 import tkinter as tk
 from random import randint
 from .device_base import DeviceBase, DeviceBaseView, GeneratorBase
+from src import tools
 
 
 class DeviceThermometerView(DeviceBaseView):
@@ -13,10 +14,28 @@ class DeviceThermometerView(DeviceBaseView):
         self.l_temp.grid(row=self.row_offset, column=0, sticky=tk.W)
         self.l_valtemp = tk.Label(self, text="VAL_TEMPERATURE")
         self.l_valtemp.grid(row=self.row_offset, column=1, sticky=tk.W)
+        self.bt_newtemp = tk.Button(self, text="Set Temperature",
+                                    command=self._bt_newtemp_click)
+        self.bt_newtemp.grid(row=self.row_offset + 1, column=0, sticky=tk.W,
+                             padx=2, pady=2)
+        self.e_newtemp = tk.Entry(self)
+        self.e_newtemp.insert(0, "20.0")
+        self.e_newtemp.grid(row=self.row_offset + 1, column=1, sticky=tk.W)
         self.l_humidity = tk.Label(self, text="Humidity:")
-        self.l_humidity.grid(row=self.row_offset + 1, column=0, sticky=tk.W)
+        self.l_humidity.grid(row=self.row_offset + 2, column=0, sticky=tk.W)
         self.l_valhumidity = tk.Label(self, text="VAL_HUMIDITY")
-        self.l_valhumidity.grid(row=self.row_offset + 1, column=1, sticky=tk.W)
+        self.l_valhumidity.grid(row=self.row_offset + 2, column=1, sticky=tk.W)
+        self.bt_newhumidity = tk.Button(self, text="Set Humidity",
+                                        command=self._bt_newhumidity_click)
+        self.bt_newhumidity.grid(row=self.row_offset + 3, column=0,
+                                 sticky=tk.W, padx=2, pady=2)
+        self.e_newhumidity = tk.Entry(self)
+        self.e_newhumidity.insert(0, "70.0")
+        self.e_newhumidity.grid(row=self.row_offset + 3, column=1, sticky=tk.W)
+
+        # callback methods when user clicks on button
+        self.on_bt_temperature_click = None
+        self.on_bt_humidity_click = None
 
     def set_state(self, state: dict):
         super().set_state(state)
@@ -24,6 +43,24 @@ class DeviceThermometerView(DeviceBaseView):
             self.l_valtemp.config(text=state["temperature"])
         if "humidity" in state:
             self.l_valhumidity.config(text=state["humidity"])
+
+    def _bt_newtemp_click(self):
+        if self.on_bt_temperature_click is None:
+            return
+        try:
+            new_temp = float(self.e_newtemp.get())
+            self.on_bt_temperature_click(new_temp)
+        except Exception as e:
+            print(e)
+
+    def _bt_newhumidity_click(self):
+        if self.on_bt_humidity_click is None:
+            return
+        try:
+            new_temp = float(self.e_newhumidity.get())
+            self.on_bt_humidity_click(new_temp)
+        except Exception as e:
+            print(e)
 
 
 class ThermometerGenerator(GeneratorBase):
@@ -37,6 +74,17 @@ class ThermometerGenerator(GeneratorBase):
         # accuracy: 1 decimal
         self.last_temp = 20  # °C
         self.last_humidity = 75  # %
+
+    def set_temp(self, new_temp: float):
+        clamped_temp = tools.clamp(new_temp, self.temp_lower, self.temp_upper)
+        self.last_temp = clamped_temp
+        self.callback({"temperature": self.last_temp})
+
+    def set_humidity(self, new_humidity: float):
+        clamped_humidity = tools.clamp(new_humidity, self.hum_lower,
+                                       self.hum_upper)
+        self.last_humidity = clamped_humidity
+        self.callback({"humidity": self.last_humidity})
 
     def run(self):
         while not self.event.is_set():
@@ -81,6 +129,17 @@ class DeviceThermometer(DeviceBase):
         super().__init__(server_info, home_id, room_id, device_id)
         self.generator = ThermometerGenerator(self._on_new_data)
         self.state = {"temperature": "20.0", "humidity": 75}
+
+    def set_view(self, view: DeviceThermometerView):
+        super().set_view(view)
+        view.on_bt_temperature_click = self._on_set_temp
+        view.on_bt_humidity_click = self._on_set_humidity
+
+    def _on_set_temp(self, temp: float):
+        self.generator.set_temp(temp)
+
+    def _on_set_humidity(self, humidity: float):
+        self.generator.set_humidity(humidity)
 
     def _on_new_data(self, data: dict):
         handled = super()._on_new_data(data)

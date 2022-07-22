@@ -76,8 +76,12 @@ If you haven't installed Python and an IDE yet, [go back to the "Python 3 and ID
    ```
    [YOUR ABSOLUTE PATH TO THE PROJECT]/virtual-mqtt-scenario/src/main.py
    ```
-4. Save your changes
-5. Select your new configuration and run the project with Shift+F10
+4. Set the "Working Directory" setting to the following path:
+   ```
+   [YOUR ABSOLUTE PATH TO THE PROJECT]/virtual-mqtt-scenario/
+   ```
+5. Save your changes
+6. Select your new configuration and run the project with Shift+F10
    
 ## Building the documentation
 

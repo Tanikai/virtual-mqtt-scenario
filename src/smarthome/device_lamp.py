@@ -1,6 +1,7 @@
 import json
 import tkinter as tk
 from .device_base import DeviceBase, DeviceBaseView
+from src import tools
 
 
 class DeviceLampView(DeviceBaseView):
@@ -62,5 +63,5 @@ class DeviceLamp(DeviceBase):
         self._set_new_value("power", power)
 
     def set_dim(self, dim: float):
-        dim = self.clamp(dim, 0.0, 1.0)
+        dim = tools.clamp(dim, 0.0, 1.0)
         self._set_new_value("dim", dim)

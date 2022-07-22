@@ -1,6 +1,7 @@
 import json
 import tkinter as tk
 from .device_base import DeviceBase, DeviceBaseView
+from src import tools
 
 
 class DeviceWindowBlindView(DeviceBaseView):
@@ -44,7 +45,7 @@ class DeviceWindowBlind(DeviceBase):
             self.set_position(payload["value"])
 
     def set_position(self, position: float):
-        position = self.clamp(position, 0.0, 1.0)
+        position = tools.clamp(position, 0.0, 1.0)
         if self.state["position"] != position:
             self.mqtt_client.publish(self._position_topic,
                                      json.dumps({"position": position}))
