@@ -47,6 +47,7 @@ class DeviceThermometerView(DeviceBaseView):
     def _bt_newtemp_click(self):
         if self.on_bt_temperature_click is None:
             return
+
         try:
             new_temp = float(self.e_newtemp.get())
             self.on_bt_temperature_click(new_temp)
@@ -56,6 +57,7 @@ class DeviceThermometerView(DeviceBaseView):
     def _bt_newhumidity_click(self):
         if self.on_bt_humidity_click is None:
             return
+
         try:
             new_temp = float(self.e_newhumidity.get())
             self.on_bt_humidity_click(new_temp)
