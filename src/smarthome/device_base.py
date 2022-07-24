@@ -122,11 +122,6 @@ class DeviceBase:
         if self.on_connect is not None:
             self.on_connect(self, client, userdata, flags, rc)
             return
-        print("Connected with result code " + str(rc))
-
-        # Subscribing in on_connect() means that if we lose the connection and
-        # reconnect then subscriptions will be renewed.
-        # client.subscribe("#")
 
     def subscribe_controls(self):
         """

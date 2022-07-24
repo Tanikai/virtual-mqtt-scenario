@@ -3,6 +3,7 @@ from tkinter import messagebox
 from smarthome.device_base import DeviceBase, DeviceBaseView
 from typing import Type
 from explorer import Explorer, ExplorerView
+from message_publisher import MessagePublisher, MessagePublisherView
 
 
 class App:
@@ -16,9 +17,9 @@ class App:
     views = []
     device_cols = []
 
-    def __init__(self):
+    def __init__(self, server_info: dict):
         """Constructor for the App class."""
-        self.root.geometry("1200x800")
+        self.root.geometry("1600x900")
         self.bt_start = tk.Button(self.root,
                                   text="Start Scenario",
                                   command=self.start_scenario)
@@ -30,13 +31,18 @@ class App:
         self.fr_explorer = ExplorerView(self.root)
         self.fr_explorer.pack(side=tk.RIGHT, anchor=tk.NE, padx=5, pady=5,
                               fill=tk.BOTH, expand=True)
-        self.explorer = Explorer()
+        self.explorer = Explorer(server_info)
         self.explorer.set_view(self.fr_explorer)
 
         for i in range(0, 4):  # create 5 columns
             column = tk.Frame(self.fr_devices, background="white")
             column.grid(row=0, column=i, sticky="nsew")
             self.device_cols.append(column)
+
+        self.fr_msg_publisher = MessagePublisherView(self.device_cols[0])
+        self.fr_msg_publisher.pack(side=tk.TOP, fill=tk.X)
+        self.msg_publisher = MessagePublisher(server_info)
+        self.msg_publisher.set_view(self.fr_msg_publisher)
 
     def run(self):
         """Runs the tkinter GUI of the application."""
@@ -52,6 +58,7 @@ class App:
         self.bt_start.config(state=tk.DISABLED)
         try:
             self.explorer.run()
+            self.msg_publisher.run()
             for d in self.devices:
                 d.run()
         except ConnectionError as e:

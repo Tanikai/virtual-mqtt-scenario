@@ -31,11 +31,11 @@ def get_config_dict() -> dict:
 
 
 if __name__ == '__main__':
-    app = App()
 
     c = get_config_dict()
     # init_sample_scenario creates a sample scenario with some devices. If you
     # want to create your own virtual smart home scenario, remove/comment out
     # the function and use app.add_device(...).
+    app = App(c)
     init_sample_scenario(app, c)
     app.run()

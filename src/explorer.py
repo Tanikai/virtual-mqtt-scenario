@@ -48,7 +48,8 @@ class Explorer:
         tv_iid: string  # treeview identifier
     """
 
-    def __init__(self, ):
+    def __init__(self, server_info: dict):
+        self.conn_info = server_info
         self.mqtt_client = mqtt.Client()
         self.mqtt_client.on_connect = self.on_connect
         self.mqtt_client.on_message = self.on_message
@@ -62,11 +63,12 @@ class Explorer:
         self.view = None
 
     def run(self):
-        self.mqtt_client.connect("localhost", 1883, 60)
+        self.mqtt_client.connect(self.conn_info["host"],
+                                 self.conn_info["port"],
+                                 self.conn_info["keepalive"])
         self.mqtt_client.loop_start()
 
     def on_connect(self, client, userdata, flags, rc):
-        print("Connected with result code " + str(rc))
         self.mqtt_client.subscribe("#")
 
     def on_message(self, client, userdata, msg):
