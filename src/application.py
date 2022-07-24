@@ -14,7 +14,7 @@ class App:
     fr_devices = None
     devices = []
     views = []
-    device_count = [0, 0, 0, 0, 0]
+    device_cols = []
 
     def __init__(self):
         """Constructor for the App class."""
@@ -32,6 +32,11 @@ class App:
                               fill=tk.BOTH, expand=True)
         self.explorer = Explorer()
         self.explorer.set_view(self.fr_explorer)
+
+        for i in range(0, 4):  # create 5 columns
+            column = tk.Frame(self.fr_devices, background="white")
+            column.grid(row=0, column=i, sticky="nsew")
+            self.device_cols.append(column)
 
     def run(self):
         """Runs the tkinter GUI of the application."""
@@ -68,12 +73,11 @@ class App:
         :return: A reference to the added device for convenience.
         """
         self.devices.append(device)
-        f = view(self.fr_devices)  # create instance of view
-        f.grid(column=d_col, row=self.device_count[d_col], pady=5, padx=5,
-               sticky="nsew")
-        self.device_count[d_col] += 1
-        device.set_view(f)
-        self.views.append(f)
+        fr_col = self.device_cols[d_col]
+        device_view = view(fr_col)  # call constructor of view
+        device_view.pack(side=tk.TOP, anchor=tk.W, fill=tk.X)
+        device.set_view(device_view)
+        self.views.append(device_view)
         return device
 
     def cleanup(self):

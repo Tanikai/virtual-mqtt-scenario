@@ -17,7 +17,8 @@ class DeviceWindowBlindView(DeviceBaseView):
 
     def set_state(self, state: dict):
         super().set_state(state)
-        self.l_valposition.config(text=state["position"])
+        if "position" in state:
+            self.l_valposition.config(text=state["position"])
 
 
 class DeviceWindowBlind(DeviceBase):

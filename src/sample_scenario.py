@@ -8,16 +8,152 @@ from smarthome.device_window_blind import DeviceWindowBlind, \
     DeviceWindowBlindView
 from smarthome.device_window import DeviceWindow, DeviceWindowView
 from smarthome.device_weather import DeviceWeather, DeviceWeatherView
+from smarthome.device_radiator import DeviceRadiator, DeviceRadiatorView
 import json
 
+home_id = "home0"
 
-def _remote_lights(self):
+
+def _remote_lights(self, user_input: str):
     self.mqtt_client.publish("home0/living_room/ceiling_lamp/toggle_power",
                              json.dumps({"sender": "remote"}))
 
 
 def _init_clock(self):
     self.generator.set_time(15, 0)
+
+
+def init_living_room(app: App, c: dict):
+    """
+    Initializes the living room.
+
+    :param app:
+    :param c:
+    :return:
+    """
+    room_id = "living_room"
+
+    app.add_device(DeviceThermometer(c, home_id, room_id, "thermometer"),
+                   DeviceThermometerView, 1)
+    app.add_device(DeviceLamp(c, home_id, room_id, "ceiling_lamp"),
+                   DeviceLampView, 1)
+    app.add_device(DeviceLamp(c, home_id, room_id, "standing_lamp"),
+                   DeviceLampView, 1)
+    d = app.add_device(DeviceRemote(c, home_id, room_id, "light_switch"),
+                       DeviceRemoteView, 1)
+    d.set_text("Toggle Lights")
+    d.on_click = _remote_lights
+
+    app.add_device(DeviceWindow(c, home_id, room_id, "window0"),
+                   DeviceWindowView, 1)
+
+    r = DeviceRemote(c, home_id, room_id, "light_switch_off_all")
+
+    def turn_off_all_lights(self, user_input: str):
+        off_msg = json.dumps({"value": False})
+        self.mqtt_client.publish("home0/living_room/ceiling_lamp/set_power",
+                                 off_msg)
+        self.mqtt_client.publish("home0/living_room/standing_lamp/set_power",
+                                 off_msg)
+        self.mqtt_client.publish("home0/bathroom/ceiling_lamp/set_power",
+                                 off_msg)
+
+    r.on_click = turn_off_all_lights
+    app.add_device(r, DeviceRemoteView)
+    r.set_text("Turn off all")
+
+
+def init_bedroom(app: App, c: dict):
+    room_id = "bedroom"
+
+    app.add_device(
+        DeviceThermometer(c, home_id, room_id, "thermometer"),
+        DeviceThermometerView, 2)
+    app.add_device(
+        DeviceWindowBlind(c, home_id, room_id, "window_blinds"),
+        DeviceWindowBlindView, 2)
+
+
+def init_bathroom(app: App, c: dict):
+    room_id = "bathroom"
+
+    app.add_device(
+        DeviceThermometer(c, home_id, room_id, "thermometer"),
+        DeviceThermometerView, 3)
+    app.add_device(DeviceLamp(c, home_id, room_id, "ceiling_lamp"),
+                   DeviceLampView, 3)
+    mirror_lamp = DeviceLamp(c, home_id, room_id, "mirror_lamp")
+
+    def mirror_lamp_subscribe(self):
+        self.mqtt_client.subscribe("home0/bathroom/ceiling_lamp/power")
+
+    mirror_lamp.on_run = mirror_lamp_subscribe
+
+    def mirror_lamp_on_message(self, client, userdata, msg):
+        payload = self._decode_payload(msg.payload)
+        if msg.topic == "home0/bathroom/ceiling_lamp/power":
+            self.set_power(payload["power"])
+
+    mirror_lamp.on_message = mirror_lamp_on_message
+    app.add_device(mirror_lamp, DeviceLampView, 3)
+
+    lamp_remote = DeviceRemote(c, home_id, room_id, "light_switch")
+
+    def _lamp_remote_clicked(self, input: str):
+        self.mqtt_client.publish("home0/bathroom/ceiling_lamp/toggle_power",
+                                 json.dumps({}))
+
+    lamp_remote.on_click = _lamp_remote_clicked
+    app.add_device(lamp_remote, DeviceRemoteView, 3)
+    lamp_remote.set_text("Toggle Light")
+
+    window = DeviceWindow(c, home_id, room_id, "window")
+    app.add_device(window, DeviceWindowView, 3)
+
+    def window_subscribe(self):
+        self.mqtt_client.subscribe("home0/bathroom/thermometer/humidity")
+
+    window.on_run = window_subscribe
+
+    def window_on_message(self, client, userdata, msg):
+        payload = self._decode_payload(msg.payload)
+        if msg.topic == "home0/bathroom/thermometer/humidity":
+            if "humidity" in payload:
+                humidity = float(payload["humidity"])
+                if humidity > 60:  # alternatively: set_opened(humidity > 60)
+                    self.set_opened(True)
+                else:
+                    self.set_opened(False)
+
+    window.on_message = window_on_message
+
+    app.add_device(DeviceRadiator(c, home_id, room_id, "towel_radiator"),
+                   DeviceRadiatorView, 3)
+
+    r = DeviceRemote(c, home_id, room_id, "radiator_control", with_input=True)
+
+    def _bathroom_radiator_control_clicked(self, input: str):
+        try:
+            new_radiator_temp = float(input)
+        except Exception as e:
+            print("user input is not float:", e)
+            return
+
+        self.mqtt_client.publish(
+            "home0/bathroom/towel_radiator/set_temperature",
+            json.dumps({"value": new_radiator_temp}))
+
+    r.on_click = _bathroom_radiator_control_clicked
+    app.add_device(r, DeviceRemoteView, 3)
+    r.set_text("Set Radiator Temp")
+
+
+def init_house(app: App, c: dict):
+    clock = DeviceClock(c, home_id, "clock")
+    clock.on_run = _init_clock
+    app.add_device(clock, DeviceClockView, 0)
+    app.add_device(DeviceWeather(c, home_id, "weather_sensor"),
+                   DeviceWeatherView, 0)
 
 
 def init_sample_scenario(app: App, c: dict):
@@ -27,26 +163,8 @@ def init_sample_scenario(app: App, c: dict):
     :param c: MQTT Broker configuration
     :return:
     """
-    h0 = "home0"
-    l_room = "living_room"
-    act_col = 1  # actuator column
-    clock = DeviceClock(c, h0, "clock0")
-    clock.on_run = _init_clock
     # create new instance of DeviceThermometer, but only pass constructor
-    app.add_device(clock, DeviceClockView)
-    app.add_device(DeviceThermometer(c, h0, l_room, "thermometer0"),
-                   DeviceThermometerView)
-    app.add_device(DeviceLamp(c, h0, l_room, "ceiling_lamp"), DeviceLampView,
-                   act_col)
-    app.add_device(DeviceLamp(c, h0, l_room, "standing_lamp"), DeviceLampView,
-                   act_col)
-    d = app.add_device(DeviceRemote(c, h0, l_room, "light_switch"),
-                       DeviceRemoteView)
-    d.set_text("Toggle Lights")
-    d.on_click = _remote_lights
-
-    app.add_device(DeviceWindow(c, h0, l_room, "window0"), DeviceWindowView,
-                   act_col)
-    app.add_device(DeviceWindowBlind(c, h0, l_room, "window_blind"),
-                   DeviceWindowBlindView, act_col)
-    app.add_device(DeviceWeather(c, h0, "weather_sensor0"), DeviceWeatherView)
+    init_house(app, c)
+    init_living_room(app, c)
+    init_bedroom(app, c)
+    init_bathroom(app, c)

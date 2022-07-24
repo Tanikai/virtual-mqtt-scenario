@@ -30,7 +30,7 @@ class DeviceThermometerView(DeviceBaseView):
         self.bt_newhumidity.grid(row=self.row_offset + 3, column=0,
                                  sticky=tk.W, padx=2, pady=2)
         self.e_newhumidity = tk.Entry(self)
-        self.e_newhumidity.insert(0, "70.0")
+        self.e_newhumidity.insert(0, "55.0")
         self.e_newhumidity.grid(row=self.row_offset + 3, column=1, sticky=tk.W)
 
         # callback methods when user clicks on button
@@ -75,7 +75,7 @@ class ThermometerGenerator(GeneratorBase):
         super().__init__(callback)
         # accuracy: 1 decimal
         self.last_temp = 20  # °C
-        self.last_humidity = 75  # %
+        self.last_humidity = 50  # %
 
     def set_temp(self, new_temp: float):
         clamped_temp = tools.clamp(new_temp, self.temp_lower, self.temp_upper)
