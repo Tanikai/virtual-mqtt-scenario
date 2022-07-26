@@ -39,8 +39,10 @@ def init_living_room(app: App, c: dict):
     d.set_text("Toggle Lights")
 
     def _remote_lights(self, user_input: str):
-        self.mqtt_client.publish("home0/living_room/ceiling_lamp/toggle_power",
-                                 json.dumps({"sender": "remote"}))
+        self.mqtt_client.publish(
+            f"{home_id}/{room_id}/ceiling_lamp/toggle_power",
+            json.dumps({"sender": "remote"}))
+
     d.on_click = _remote_lights
 
     # Window
@@ -55,11 +57,11 @@ def init_living_room(app: App, c: dict):
 
     def turn_off_all_lights(self, user_input: str):
         off_msg = json.dumps({"value": False})
-        self.mqtt_client.publish("home0/living_room/ceiling_lamp/set_power",
-                                 off_msg)
-        self.mqtt_client.publish("home0/living_room/standing_lamp/set_power",
-                                 off_msg)
-        self.mqtt_client.publish("home0/bathroom/ceiling_lamp/set_power",
+        self.mqtt_client.publish(
+            f"{home_id}/living_room/ceiling_lamp/set_power", off_msg)
+        self.mqtt_client.publish(
+            f"{home_id}/living_room/standing_lamp/set_power", off_msg)
+        self.mqtt_client.publish(f"{home_id}/bathroom/ceiling_lamp/set_power",
                                  off_msg)
 
     r.on_click = turn_off_all_lights
@@ -83,8 +85,8 @@ def init_bedroom(app: App, c: dict):
     lamp_remote = DeviceRemote(c, home_id, room_id, "light_switch")
 
     def _lamp_remote_clicked(self, input: str):
-        self.mqtt_client.publish("home0/bedroom/ceiling_lamp/toggle_power",
-                                 json.dumps({}))
+        self.mqtt_client.publish(
+            f"{home_id}/{room_id}/ceiling_lamp/toggle_power", json.dumps({}))
 
     lamp_remote.on_click = _lamp_remote_clicked
     app.add_device(lamp_remote, DeviceRemoteView, 2)
@@ -121,14 +123,18 @@ def init_bathroom(app: App, c: dict):
     mirror_lamp = DeviceLamp(c, home_id, room_id, "mirror_lamp")
 
     def mirror_lamp_subscribe(self):
-        self.mqtt_client.subscribe("home0/bathroom/ceiling_lamp/power")
+        self.mqtt_client.subscribe(f"{home_id}/{room_id}/ceiling_lamp/power")
 
     mirror_lamp.on_run = mirror_lamp_subscribe
 
-    def mirror_lamp_on_message(self, client, userdata, msg):
+    def mirror_lamp_on_message(self, client, userdata, msg) -> bool:
+        handled = False
         payload = self._decode_payload(msg.payload)
-        if msg.topic == "home0/bathroom/ceiling_lamp/power":
+        if msg.topic == f"{home_id}/{room_id}/ceiling_lamp/power":
+            print("got message")
             self.set_power(payload["power"])
+            handled = True
+        return handled
 
     mirror_lamp.on_message = mirror_lamp_on_message
     app.add_device(mirror_lamp, DeviceLampView, 3)
@@ -137,8 +143,8 @@ def init_bathroom(app: App, c: dict):
     lamp_remote = DeviceRemote(c, home_id, room_id, "light_switch")
 
     def _lamp_remote_clicked(self, input: str):
-        self.mqtt_client.publish("home0/bathroom/ceiling_lamp/toggle_power",
-                                 json.dumps({}))
+        self.mqtt_client.publish(
+            f"{home_id}/{room_id}/ceiling_lamp/toggle_power", json.dumps({}))
 
     lamp_remote.on_click = _lamp_remote_clicked
     app.add_device(lamp_remote, DeviceRemoteView, 3)
@@ -149,19 +155,21 @@ def init_bathroom(app: App, c: dict):
     app.add_device(window, DeviceWindowView, 3)
 
     def window_subscribe(self):
-        self.mqtt_client.subscribe("home0/bathroom/thermometer/humidity")
+        self.mqtt_client.subscribe(f"{home_id}/{room_id}/thermometer/humidity")
 
     window.on_run = window_subscribe
 
-    def window_on_message(self, client, userdata, msg):
+    def window_on_message(self, client, userdata, msg) -> bool:
+        handled = False
         payload = self._decode_payload(msg.payload)
-        if msg.topic == "home0/bathroom/thermometer/humidity":
-            if "humidity" in payload:
-                humidity = float(payload["humidity"])
-                if humidity > 60:  # alternatively: set_opened(humidity > 60)
-                    self.set_opened(True)
-                else:
-                    self.set_opened(False)
+        if msg.topic == f"{home_id}/{room_id}/thermometer/humidity":
+            humidity = float(payload["humidity"])
+            if humidity > 60:  # alternatively: set_opened(humidity > 60)
+                self.set_opened(True)
+            else:
+                self.set_opened(False)
+            handled = True
+        return handled
 
     window.on_message = window_on_message
 
@@ -180,7 +188,7 @@ def init_bathroom(app: App, c: dict):
             return
 
         self.mqtt_client.publish(
-            "home0/bathroom/towel_radiator/set_temperature",
+            f"{home_id}/{room_id}/towel_radiator/set_temperature",
             json.dumps({"value": new_radiator_temp}))
 
     r.on_click = _bathroom_radiator_control_clicked

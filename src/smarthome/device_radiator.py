@@ -34,8 +34,9 @@ class DeviceRadiator(DeviceBase):
 
     def _client_message(self, client, userdata, msg):
         if self.on_message is not None:
-            self.on_message(self, client, userdata, msg)
-            return
+            handled = self.on_message(self, client, userdata, msg)
+            if handled:
+                return
 
         payload = self._decode_payload(msg.payload)
 

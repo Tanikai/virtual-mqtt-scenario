@@ -135,8 +135,10 @@ class DeviceBase:
         """Callback method when a PUBLISH Control Packet is received from the
         server."""
         if self.on_message is not None:
-            self.on_message(self, client, userdata, msg)
-            return
+            handled = self.on_message(self, client, userdata, msg)
+            return handled
+        else:
+            return False # not handled
 
     def _on_new_data(self, data: dict) -> bool:
         if self.on_new_data is not None:

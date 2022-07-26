@@ -39,8 +39,8 @@ class DeviceLamp(DeviceBase):
         self.mqtt_client.subscribe(self._toggle_power_topic)
 
     def _client_message(self, client, userdata, msg):
-        if self.on_message is not None:
-            self.on_message(self, client, userdata, msg)
+        handled = super()._client_message(client, userdata, msg)
+        if handled:
             return
 
         payload = self._decode_payload(msg.payload)
