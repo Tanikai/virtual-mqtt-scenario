@@ -1,0 +1,77 @@
+site_name: Virtual MQTT Scenario
+site_url: https://virtual-mqtt-scenario.readthedocs.io/
+site_author: Kai Anter
+site_description: >-
+  A virtual MQTT simulator in a smart home scenario
+
+# Repository
+repo_name: Tanikai/virtual-mqtt-scenario
+repo_url: https://github.com/Tanikai/virtual-mqtt-scenario
+
+theme:
+  name: material
+  language: en
+  features:
+    - content.code.annotate
+    # - content.tabs.link
+    - content.tooltips
+    # - header.autohide
+    # - navigation.expand
+    - navigation.indexes
+    # - navigation.instant
+    # - navigation.prune
+    - navigation.sections
+    - navigation.tabs
+    # - navigation.tabs.sticky
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - search.share
+    - search.suggest
+    - toc.follow
+    - toc.integrate
+  palette:
+    - scheme: default
+      primary: deep purple
+      accent: deep purple
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: deep purple
+      accent: deep purple
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: Roboto
+    code: Roboto Mono
+
+plugins:
+  - search
+  - minify:
+      minify_html: true
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+
+# Page tree for navigation
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Python / IDE setup: general/setup.md
+      - MQTT Broker setup: general/mosquitto-setup.md
+      - Getting Started: general/getting-started.md
+  - Smart Home Scenario:
+      - Introduction: scenarios/smart-home/introduction.md
+      - List of Devices: scenarios/smart-home/devices.md
+      - Setting up your Smart Home simulation: scenarios/smart-home/simulation-setup.md
+      - Customizing device functionality: scenarios/smart-home/extend-device.md
+      - Creating your own device: scenarios/smart-home/create-own-device.md
