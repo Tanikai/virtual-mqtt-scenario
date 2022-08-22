@@ -1,4 +1,4 @@
-# virtual-mqtt-broker
+# Virtual MQTT Scenario
 
 ## About This Project
 
